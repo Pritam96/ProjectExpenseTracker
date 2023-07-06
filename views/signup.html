@@ -43,8 +43,12 @@
                       type="text"
                       id="email"
                       class="form-control"
+                      aria-describedby="emailHelp"
                       required
                     />
+                    <small id="emailHelp" class="form-text text-danger"
+                      >We'll never share your email with anyone else.</small
+                    >
                   </div>
                 </div>
               </div>
@@ -54,7 +58,7 @@
                     <label for="passwd" class="form-label">Password</label>
                     <input
                       type="password"
-                      id="passwd"
+                      id="password"
                       class="form-control"
                       required
                     />
@@ -75,6 +79,7 @@
       </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <!-- Bootstrap Bundle with Popper -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
