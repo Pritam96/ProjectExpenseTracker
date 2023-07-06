@@ -2,6 +2,8 @@ const BASE_URL = 'http://localhost:4000';
 
 const form = document.querySelector('#signup-form');
 
+const alert_content = document.querySelector('#alert');
+
 form.addEventListener('submit', createUser);
 
 async function createUser(e) {
@@ -16,9 +18,13 @@ async function createUser(e) {
       email,
       password,
     });
-    console.log(result);
+    alert_content.className = 'alert alert-success';
+    alert_content.textContent = 'user is registered successfully';
+    // console.log(result.data);
     form.reset();
   } catch (error) {
-    console.log(error);
+    console.log(error.response.data.error);
+    alert_content.className = 'alert alert-danger';
+    alert_content.textContent = error.response.data.error;
   }
 }

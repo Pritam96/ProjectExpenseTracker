@@ -10,15 +10,19 @@ const sequelize = require('./utils/database');
 
 const userRoutes = require('./routes/user');
 
+const errorHandler = require('./middleware/error');
+
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(express.json());
 
 app.use(cors());
 
 app.use('/user', userRoutes);
+
+app.use(errorHandler);
 
 const PORT = 4000;
 

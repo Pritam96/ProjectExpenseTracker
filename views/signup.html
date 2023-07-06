@@ -46,8 +46,8 @@
                       aria-describedby="emailHelp"
                       required
                     />
-                    <small id="emailHelp" class="form-text text-danger"
-                      >We'll never share your email with anyone else.</small
+                    <small id="emailHelp" class="form-text text-muted"
+                      >Enter a valid email id here</small
                     >
                   </div>
                 </div>
@@ -65,15 +65,17 @@
                   </div>
                 </div>
               </div>
-              <div class="mt-3">
+              <div class="mt-3 mb-3">
                 <button type="submit" class="btn btn-outline-primary">
                   Submit
                 </button>
-              </div>
-              <div class="mt-3">
-                <a href="/user/signup">Existing User - Login</a>
+
+                <div class="mt-3">
+                  <a href="/user/signup">Existing User - Login</a>
+                </div>
               </div>
             </form>
+            <div class="alert alert-primary" role="alert" id="alert"></div>
           </div>
         </div>
       </div>
