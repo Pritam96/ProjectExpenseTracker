@@ -12,10 +12,12 @@ async function loginUser(e) {
   const password = document.querySelector('#password').value;
 
   try {
-    const result = await axios.post(`${BASE_URL}/user/login`, {
+    const response = await axios.post(`${BASE_URL}/user/login`, {
       email,
       password,
     });
+    // console.log(result.data.user[0].id);
+    localStorage.setItem('token', response.data.token);
     window.location.href = './expense.html';
   } catch (error) {
     fadeAlert('alert alert-danger', error.response.data.error, 5000);

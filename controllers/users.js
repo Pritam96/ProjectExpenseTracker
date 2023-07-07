@@ -1,6 +1,8 @@
 const User = require('../models/user');
 const ErrorResponse = require('../utils/errorResponse');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const secretKey = 'secretKey';
 
 // @desc Create new user
 // @route POST /user/add
@@ -64,9 +66,14 @@ exports.postLoginUser = async (req, res, next) => {
       console.log('User Logged in');
       res.status(201).json({
         success: true,
+        token: generateAccessToken(user[0].id),
       });
     });
   } catch (error) {
     next(new ErrorResponse(error, 409));
   }
+};
+
+const generateAccessToken = (id) => {
+  return jwt.sign({ userId: id }, secretKey);
 };

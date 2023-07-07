@@ -3,7 +3,7 @@ const Expense = require('../models/expense');
 // GET => / => GET ALL EXPENSES
 exports.getExpenses = async (req, res, next) => {
   try {
-    const expense = await Expense.findAll();
+    const expense = await req.user.getExpenses();
     res.json(expense);
   } catch (error) {
     console.log(error);
@@ -18,7 +18,7 @@ exports.postAddExpense = async (req, res, next) => {
   const category = req.body.category;
 
   try {
-    const expense = await Expense.create({
+    const expense = await req.user.createExpense({
       price: price,
       description: description,
       category: category,

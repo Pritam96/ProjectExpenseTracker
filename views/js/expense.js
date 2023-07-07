@@ -4,6 +4,8 @@ const form = document.querySelector('#expense-form');
 
 const submit_button = document.querySelector('#submit-button');
 
+const token = localStorage.getItem('token');
+
 let total = 0;
 
 form.addEventListener('submit', addToTheList);
@@ -18,11 +20,17 @@ async function addToTheList(e) {
   if (id === '' || id === null) {
     //* postAddExpense - Create a new expense
     try {
-      const response = await axios.post(`${BASE_URL}/expense`, {
-        price,
-        description,
-        category,
-      });
+      const response = await axios.post(
+        `${BASE_URL}/expense`,
+        {
+          price,
+          description,
+          category,
+        },
+        {
+          headers: { Authorization: token },
+        }
+      );
       // console.log(response);
       form.reset();
       console.log('Record Added');
@@ -33,12 +41,18 @@ async function addToTheList(e) {
   } else {
     //* postEditExpense - Update an expense
     try {
-      const response = await axios.post(`${BASE_URL}/expense/edit`, {
-        id,
-        price,
-        description,
-        category,
-      });
+      const response = await axios.post(
+        `${BASE_URL}/expense/edit`,
+        {
+          id,
+          price,
+          description,
+          category,
+        },
+        {
+          headers: { Authorization: token },
+        }
+      );
       // console.log(response);
       form.reset();
       console.log('Record Updated');
@@ -96,7 +110,8 @@ function product(item) {
     async function deleteItem() {
       try {
         const response = await axios.post(
-          `${BASE_URL}/expense/delete/${item.id}`
+          `${BASE_URL}/expense/delete/${item.id}`,
+          { headers: { Authorization: token } }
         );
         console.log('Record Deleted');
         showAll();
@@ -155,7 +170,9 @@ async function showAll() {
   total = 0;
   //* getExpenses - get all items
   try {
-    const response = await axios.get(`${BASE_URL}/expense`);
+    const response = await axios.get(`${BASE_URL}/expense`, {
+      headers: { Authorization: token },
+    });
     if (response.data.length === 0) {
       document.querySelector('#response').innerHTML = '';
       console.log('NO DATA IS AVAILABLE');

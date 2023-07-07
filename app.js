@@ -29,8 +29,8 @@ app.use('/expense', expenseRoutes);
 
 app.use(errorHandler);
 
-// User.hasMany(Expense);
-// Expense.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
+User.hasMany(Expense);
+Expense.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
 
 const PORT = 4000;
 
