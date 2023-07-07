@@ -16,9 +16,7 @@ async function loginUser(e) {
       email,
       password,
     });
-
-    fadeAlert('alert alert-success', 'user logged in successfully', 3000);
-    form.reset();
+    window.location.href = './expense.html';
   } catch (error) {
     fadeAlert('alert alert-danger', error.response.data.error, 5000);
   }

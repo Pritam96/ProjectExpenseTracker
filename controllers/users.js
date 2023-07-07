@@ -43,16 +43,24 @@ exports.postLoginUser = async (req, res, next) => {
   const password = req.body.password;
 
   try {
-    const user_email = await User.findAll({
+    const user = await User.findAll({
       where: { email: email },
     });
 
-    if (!user_email[0]) {
+    if (!user[0]) {
       throw 'User with this email id not exist';
     }
 
-    bcrypt.compare(password, user_email[0].password, (err, data) => {
-      if (err) throw 'Wrong email id or password';
+    bcrypt.compare(password, user[0].password, (err, data) => {
+      if (err) {
+        throw `Something went wrong! ERROR: ${err}`;
+      }
+      if (!data) {
+        return res.status(400).json({
+          success: false,
+          error: 'Incorrect password',
+        });
+      }
       console.log('User Logged in');
       res.status(201).json({
         success: true,
