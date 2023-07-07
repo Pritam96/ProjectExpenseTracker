@@ -17,10 +17,10 @@
   </head>
   <body>
     <div class="container">
-      <div class="col-xl-6 col-sm-8 m-5">
+      <div class="col-xl-6 col-sm-8 m-4">
         <div class="card">
           <div class="card-body">
-            <h2 class="card-title">Registration Form</h2>
+            <h2 class="card-title mb-4">Registration Form</h2>
             <form action="/user/signup" method="POST" id="signup-form">
               <div class="row">
                 <div class="col">
@@ -43,12 +43,8 @@
                       type="text"
                       id="email"
                       class="form-control"
-                      aria-describedby="emailHelp"
                       required
                     />
-                    <small id="emailHelp" class="form-text text-muted"
-                      >Enter a valid email id here</small
-                    >
                   </div>
                 </div>
               </div>
@@ -75,7 +71,12 @@
                 </div>
               </div>
             </form>
-            <div class="alert alert-primary" role="alert" id="alert"></div>
+            <div
+              class="alert"
+              role="alert"
+              style="height: 60px"
+              id="alert"
+            ></div>
           </div>
         </div>
       </div>
