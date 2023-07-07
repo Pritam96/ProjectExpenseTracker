@@ -22,7 +22,6 @@ async function createUser(e) {
     fadeAlert('alert alert-success', 'user is registered successfully', 3000);
     form.reset();
   } catch (error) {
-    console.log(error.response.data.error);
     fadeAlert('alert alert-danger', error.response.data.error, 5000);
   }
 }
@@ -32,7 +31,7 @@ function fadeAlert(alertType, alertBody, timeout) {
   alert_content.textContent = alertBody;
 
   setTimeout(function () {
-    alert_content.className = alert;
+    alert_content.className = 'alert';
     alert_content.textContent = '';
   }, timeout);
 }

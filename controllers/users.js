@@ -9,34 +9,56 @@ exports.postCreateUser = async (req, res, next) => {
   const password = req.body.password;
 
   try {
-    // const existing_user = await User.findAll({ where: { email: email } });
-    // if (existing_user) {
-    //   return res.status(409).json({
-    //     success: false,
-    //     data: {},
-    //     error: 'email id is already exists in the database',
-    //   });
-    // }
     const user = await User.create({
       name: name,
       email: email,
       password: password,
     });
 
+    console.log('user created');
+
     res.status(201).json({
       success: true,
       data: user,
     });
   } catch (error) {
-    // res.status(400).json({
-    //   success: false,
-    // });
-
     next(
       new ErrorResponse(
         'this email is already associated with another account',
         409
       )
     );
+  }
+};
+
+// @desc User Login
+// @route POST /user/login
+exports.postLoginUser = async (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  try {
+    const user_email = await User.findAll({
+      where: { email: email },
+    });
+
+    if (!user_email[0]) {
+      throw 'User with this email id not exist';
+    }
+
+    const user_password = await User.findAll({
+      where: { password: password },
+    });
+
+    if (!user_password[0]) {
+      throw 'Wrong email id or password';
+    }
+
+    console.log('User Logged in');
+    res.status(201).json({
+      success: true,
+    });
+  } catch (error) {
+    next(new ErrorResponse(error, 409));
   }
 };
