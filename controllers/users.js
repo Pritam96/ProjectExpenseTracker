@@ -75,5 +75,7 @@ exports.postLoginUser = async (req, res, next) => {
 };
 
 const generateAccessToken = (id) => {
-  return jwt.sign({ userId: id }, secretKey);
+  return jwt.sign({ userId: id }, secretKey, {
+    expiresIn: '2h',
+  });
 };

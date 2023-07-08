@@ -19,8 +19,10 @@ async function createUser(e) {
       password,
     });
 
-    fadeAlert('alert alert-success', 'user is registered successfully', 3000);
     form.reset();
+    alert('User is successfully registered');
+    // fadeAlert('alert alert-success', 'user is registered successfully', 3000);
+    window.location.href = './signin.html';
   } catch (error) {
     fadeAlert('alert alert-danger', error.response.data.error, 5000);
   }
