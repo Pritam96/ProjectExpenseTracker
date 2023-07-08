@@ -13,7 +13,11 @@ router.get('/', authMiddleware, expenseController.getExpenses);
 router.post('/', authMiddleware, expenseController.postAddExpense);
 
 // POST => DELETE AN EXPENSE
-router.post('/delete/:id', authMiddleware, expenseController.postDeleteExpense);
+router.delete(
+  '/delete/:id',
+  authMiddleware,
+  expenseController.postDeleteExpense
+);
 
 // POST => EDIT AN EXPENSE
 router.post('/edit', authMiddleware, expenseController.postEditExpense);

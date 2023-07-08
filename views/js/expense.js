@@ -109,7 +109,7 @@ function product(item) {
     //* postDeleteExpense - Delete an item
     async function deleteItem() {
       try {
-        const response = await axios.post(
+        const response = await axios.delete(
           `${BASE_URL}/expense/delete/${item.id}`,
           { headers: { Authorization: token } }
         );
