@@ -4,10 +4,12 @@ const Expense = require('../models/expense');
 exports.getExpenses = async (req, res, next) => {
   try {
     const expense = await req.user.getExpenses();
-    res.json(expense);
+    res
+      .status(200)
+      .json({ success: true, count: expense.length, data: expense });
   } catch (error) {
     console.log(error);
-    res.json([]);
+    res.status(500).json({ success: false, error: error });
   }
 };
 
@@ -24,10 +26,10 @@ exports.postAddExpense = async (req, res, next) => {
       category: category,
     });
     console.log('Record Added');
-    res.json(expense);
+    res.status(201).json({ success: true, data: expense });
   } catch (error) {
     console.log(error);
-    res.json({});
+    res.status(500).json({ success: false, error: error });
   }
 };
 
@@ -39,10 +41,10 @@ exports.postDeleteExpense = async (req, res, next) => {
     const expense = await Expense.findByPk(id);
     const result = await expense.destroy();
     console.log('Record Deleted');
-    res.json(result);
+    res.status(200).json({ success: true, data: {} });
   } catch (error) {
     console.log(error);
-    res.json({});
+    res.status(500).json({ success: false, error: error });
   }
 };
 
@@ -63,9 +65,9 @@ exports.postEditExpense = async (req, res, next) => {
     const updatedExpense = await expense.save();
 
     console.log('Record Updated');
-    res.json(updatedExpense);
+    res.status(200).json({ success: true, data: updatedExpense });
   } catch (error) {
     console.log(error);
-    res.json({});
+    res.status(500).json({ success: false, error: error });
   }
 };

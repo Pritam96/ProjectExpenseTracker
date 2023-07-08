@@ -36,7 +36,7 @@ async function addToTheList(e) {
       console.log('Record Added');
       showAll();
     } catch (error) {
-      console.log(`ERROR: ${error}`);
+      console.log(error);
     }
   } else {
     //* postEditExpense - Update an expense
@@ -116,7 +116,7 @@ function product(item) {
         console.log('Record Deleted');
         showAll();
       } catch (error) {
-        console.log(`ERROR: ${error}`);
+        console.log(error);
       }
     }
   };
@@ -148,7 +148,6 @@ function product(item) {
       .querySelector(`#delete_button_${item.id}`)
       .classList.add('disabled');
     document.querySelector(`#edit_button_${item.id}`).classList.add('disabled');
-    // console.log(the_row);
   };
 
   row.appendChild(price_col);
@@ -176,19 +175,18 @@ async function showAll() {
     if (response.data.length === 0) {
       document.querySelector('#response').innerHTML = '';
       console.log('NO DATA IS AVAILABLE');
-      // total = 0;
       document.querySelector(
         '#total'
       ).innerHTML = `<h5>Total value worth of products: Rs 0</h5>`;
     } else {
       document.querySelector('#response').innerHTML = '';
-      response.data.forEach((item) => {
+      response.data.data.forEach((item) => {
         total += Number(item.price);
         product(item);
       });
     }
   } catch (error) {
-    console.log(`ERROR: ${error}`);
+    console.log(error);
   }
 }
 
