@@ -2,7 +2,7 @@ const User = require('../models/user');
 const ErrorResponse = require('../utils/errorResponse');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const secretKey = 'secretKey';
+const secretKey = process.env.JWT_SECRET_KEY;
 
 // @desc Create new user
 // @route POST /user/add
