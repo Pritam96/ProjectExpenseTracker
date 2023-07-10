@@ -4,6 +4,7 @@ const Expense = require('../models/expense');
 exports.getExpenses = async (req, res, next) => {
   try {
     const expense = await req.user.getExpenses();
+    // console.log(expense);
     res
       .status(200)
       .json({ success: true, count: expense.length, data: expense });

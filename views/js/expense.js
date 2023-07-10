@@ -191,3 +191,64 @@ async function showAll() {
 }
 
 showAll();
+
+//* Razorpay Implementation
+
+const razorpay_button = document.querySelector('#rzp-button1');
+razorpay_button.addEventListener('click', checkout);
+
+async function checkout(e) {
+  e.preventDefault();
+  const response = await axios.get(`${BASE_URL}/checkout`, {
+    headers: { Authorization: token },
+  });
+
+  const options = {
+    key: response.data.key_id,
+    name: 'ABC Company',
+    description: 'Test Transaction',
+    image:
+      'https://png.pngtree.com/template/20201023/ourmid/pngtree-fitness-logo-with-letter-tg-icon-idea-of-logo-design-image_427180.jpg',
+    order_id: response.data.order.id,
+
+    // handles successful payment
+    handler: async function (response) {
+      const update = await axios.post(
+        `${BASE_URL}/checkout/update`,
+        {
+          payment_id: response.razorpay_payment_id,
+          order_id: response.razorpay_order_id,
+          signature: response.razorpay_signature,
+        },
+        {
+          headers: { Authorization: token },
+        }
+      );
+
+      console.log('Transaction Update: ', update);
+      alert('You are a premium user now!');
+      // set new token to localStorage
+      localStorage.setItem('token', update.data.token);
+      // ... Remove pay button with user isPremium = true
+      // ... Premium functionality here
+    },
+    theme: {
+      color: '#3399cc',
+    },
+  };
+
+  const rzp1 = new Razorpay(options);
+  rzp1.open();
+
+  rzp1.on('payment.failed', function (response) {
+    // alert(response.error.code);
+    // alert(response.error.description);
+    // alert(response.error.source);
+    // alert(response.error.step);
+    // alert(response.error.reason);
+    // alert(response.error.metadata.order_id);
+    // alert(response.error.metadata.payment_id);
+    console.log(response);
+    alert('Something went wrong');
+  });
+}

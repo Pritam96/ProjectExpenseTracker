@@ -12,6 +12,7 @@ const sequelize = require('./utils/database');
 
 const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
+const checkoutRoutes = require('./routes/razorpay');
 
 dotenv.config({ path: './config.env' });
 
@@ -19,6 +20,7 @@ const errorHandler = require('./middleware/error');
 
 const User = require('./models/user');
 const Expense = require('./models/expense');
+const Order = require('./models/order');
 
 const app = express();
 
@@ -28,11 +30,15 @@ app.use(cors());
 
 app.use('/user', userRoutes);
 app.use('/expense', expenseRoutes);
+app.use('/checkout', checkoutRoutes);
 
 app.use(errorHandler);
 
 User.hasMany(Expense);
 Expense.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
+
+User.hasMany(Order);
+Order.belongsTo(User);
 
 const PORT = process.env.PORT || 4000;
 

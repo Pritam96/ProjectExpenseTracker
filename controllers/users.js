@@ -2,7 +2,7 @@ const User = require('../models/user');
 const ErrorResponse = require('../utils/errorResponse');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const secretKey = process.env.JWT_SECRET_KEY;
+const secretKey = 'secretKey';
 
 // @desc Create new user
 // @route POST /user/add
@@ -56,6 +56,7 @@ exports.postLoginUser = async (req, res, next) => {
     bcrypt.compare(password, user[0].password, (err, data) => {
       if (err) {
         throw `Something went wrong! ERROR: ${err}`;
+        // console.log(err);
       }
       if (!data) {
         return res.status(400).json({
@@ -66,16 +67,26 @@ exports.postLoginUser = async (req, res, next) => {
       console.log('User Logged in');
       res.status(201).json({
         success: true,
-        token: generateAccessToken(user[0].id),
+        token: generateAccessToken(
+          user[0].id,
+          user[0].name,
+          user[0].email,
+          user[0].isPremium
+        ),
       });
     });
   } catch (error) {
     next(new ErrorResponse(error, 409));
+    // console.log(error);
   }
 };
 
-const generateAccessToken = (id) => {
-  return jwt.sign({ userId: id }, secretKey, {
-    expiresIn: '2h',
-  });
+exports.generateAccessToken = (id, name, email, isPremium) => {
+  return jwt.sign(
+    { id: id, name: name, email: email, isPremium: isPremium },
+    secretKey,
+    {
+      expiresIn: '2h',
+    }
+  );
 };

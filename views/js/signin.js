@@ -20,7 +20,8 @@ async function loginUser(e) {
     localStorage.setItem('token', response.data.token);
     window.location.href = './expense.html';
   } catch (error) {
-    fadeAlert('alert alert-danger', error.response.data.error, 5000);
+    // fadeAlert('alert alert-danger', error.response.data.error, 5000);
+    console.log(error);
   }
 }
 
