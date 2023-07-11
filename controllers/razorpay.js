@@ -2,8 +2,6 @@ const Razorpay = require('razorpay');
 const Order = require('../models/order');
 const userController = require('../controllers/users');
 
-const key_id = 'rzp_test_fFqWdkRjmFyWSF';
-const key_secret = 'EYsdvBsKtkELg9Nwb1BBjL0a';
 const amount = 25;
 
 let options = {
@@ -14,8 +12,8 @@ let options = {
 exports.getOrderInfo = (req, res, next) => {
   try {
     const instance = new Razorpay({
-      key_id: key_id,
-      key_secret: key_secret,
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET,
     });
 
     instance.orders.create(options, async (err, order) => {
@@ -25,7 +23,9 @@ exports.getOrderInfo = (req, res, next) => {
 
       // creating a order record with razorpay generated order_id
       await req.user.createOrder({ order_id: order.id });
-      res.status(201).json({ order: order, key_id: key_id });
+      res
+        .status(201)
+        .json({ order: order, key_id: process.env.RAZORPAY_KEY_ID });
     });
   } catch (error) {
     console.log(error);

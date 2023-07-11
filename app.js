@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 
 const bodyParser = require('body-parser');
@@ -13,8 +15,6 @@ const sequelize = require('./utils/database');
 const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
 const checkoutRoutes = require('./routes/razorpay');
-
-dotenv.config({ path: './config.env' });
 
 const errorHandler = require('./middleware/error');
 
