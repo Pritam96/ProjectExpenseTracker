@@ -81,12 +81,11 @@ exports.postLoginUser = async (req, res, next) => {
   }
 };
 
-exports.generateAccessToken = (id, name, email, isPremium) => {
+function generateAccessToken(id, name, email, isPremium) {
   return jwt.sign(
     { id: id, name: name, email: email, isPremium: isPremium },
-    secretKey,
-    {
-      expiresIn: '2h',
-    }
+    secretKey
   );
-};
+}
+
+exports.generateAccessToken = generateAccessToken;
