@@ -1,4 +1,6 @@
 const Expense = require('../models/expense');
+const User = require('../models/user');
+const Sequelize = require('sequelize');
 
 // GET => / => GET ALL EXPENSES
 exports.getExpenses = async (req, res, next) => {
@@ -70,6 +72,42 @@ exports.postEditExpense = async (req, res, next) => {
 
     console.log('Record Updated');
     res.status(200).json({ success: true, data: updatedExpense });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, error: error });
+  }
+};
+
+// GET => /leaderboard => GET THE LEADER-BOARD
+exports.getLeaderboard = async (req, res, next) => {
+  try {
+    if (!req.user.isPremium) {
+      return res.status(403).json({
+        success: false,
+        error: 'the user does not have permission to perform this action',
+      });
+    }
+
+    const leaderboard = await User.findAll({
+      attributes: [
+        'id',
+        'name',
+        [Sequelize.fn('sum', Sequelize.col('price')), 'total_expense'],
+      ],
+      include: [
+        {
+          model: Expense,
+          attributes: [],
+        },
+      ],
+      group: ['user.id'],
+      order: [['total_expense', 'DESC']],
+    });
+
+    res.status(200).json({
+      success: true,
+      data: leaderboard,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, error: error });

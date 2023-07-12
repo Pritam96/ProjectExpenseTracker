@@ -192,6 +192,31 @@ async function showAll() {
     if (!response.data.userIsPremium) {
       document.querySelector('#rzp-button1').className =
         'btn btn-outline-success mt-5';
+    } else {
+      // show leaderboard
+      const leaderboard_div = document.querySelector('#leaderboard');
+      const ul = document.createElement('ul');
+
+      try {
+        const response = await axios.get(`${BASE_URL}/expense/leaderboard`, {
+          headers: { Authorization: token },
+        });
+
+        if (response.data.data.length > 0) {
+          response.data.data.forEach((data) => {
+            const li = document.createElement('li');
+            li.appendChild(
+              document.createTextNode(
+                `Name: ${data.name} => Total Expense: ${data.total_expense}`
+              )
+            );
+            ul.appendChild(li);
+          });
+          leaderboard_div.appendChild(ul);
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
   } catch (error) {
     console.log(error);

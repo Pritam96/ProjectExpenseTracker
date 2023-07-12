@@ -22,4 +22,7 @@ router.delete(
 // POST => EDIT AN EXPENSE
 router.post('/edit', authMiddleware, expenseController.postEditExpense);
 
+// GET => /leaderboard => GET THE LEADER-BOARD
+router.get('/leaderboard', authMiddleware, expenseController.getLeaderboard);
+
 module.exports = router;
