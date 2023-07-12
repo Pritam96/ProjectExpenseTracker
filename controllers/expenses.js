@@ -5,9 +5,12 @@ exports.getExpenses = async (req, res, next) => {
   try {
     const expense = await req.user.getExpenses();
     // console.log(expense);
-    res
-      .status(200)
-      .json({ success: true, count: expense.length, data: expense });
+    res.status(200).json({
+      success: true,
+      count: expense.length,
+      data: expense,
+      userIsPremium: req.user.isPremium,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, error: error });

@@ -172,7 +172,8 @@ async function showAll() {
     const response = await axios.get(`${BASE_URL}/expense`, {
       headers: { Authorization: token },
     });
-    if (response.data.length === 0) {
+    // console.log(response.data);
+    if (response.data.count === 0) {
       document.querySelector('#response').innerHTML = '';
       console.log('NO DATA IS AVAILABLE');
       document.querySelector(
@@ -184,6 +185,13 @@ async function showAll() {
         total += Number(item.price);
         product(item);
       });
+    }
+
+    // check user is premium or not
+    // console.log(response.data.userIsPremium);
+    if (!response.data.userIsPremium) {
+      document.querySelector('#rzp-button1').className =
+        'btn btn-outline-success mt-5';
     }
   } catch (error) {
     console.log(error);
@@ -231,6 +239,7 @@ async function checkout(e) {
       localStorage.setItem('token', update.data.token);
       // ... Remove pay button with user isPremium = true
       // ... Premium functionality here
+      window.location.reload(); // reload the page
     },
     theme: {
       color: '#3399cc',
