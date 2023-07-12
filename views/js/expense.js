@@ -192,10 +192,10 @@ async function showAll() {
     if (!response.data.userIsPremium) {
       document.querySelector('#rzp-button1').className =
         'btn btn-outline-success mt-5';
+      document.querySelector('#leaderboard').className = 'visually-hidden';
     } else {
       // show leaderboard
-      const leaderboard_div = document.querySelector('#leaderboard');
-      const ul = document.createElement('ul');
+      const leaderboard_div = document.querySelector('#leaderboard_response');
 
       try {
         const response = await axios.get(`${BASE_URL}/expense/leaderboard`, {
@@ -203,16 +203,34 @@ async function showAll() {
         });
 
         if (response.data.data.length > 0) {
+          leaderboard_div.textContent = '';
           response.data.data.forEach((data) => {
-            const li = document.createElement('li');
-            li.appendChild(
-              document.createTextNode(
-                `Name: ${data.name} => Total Expense: ${data.total_expense}`
-              )
-            );
-            ul.appendChild(li);
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            const card_body = document.createElement('div');
+            card_body.className = 'card-body';
+
+            const row = document.createElement('div');
+            row.className = 'row';
+
+            const col_name = document.createElement('div');
+            col_name.className = 'col';
+            col_name.textContent = data.name;
+
+            const col_expense = document.createElement('div');
+            col_expense.className = 'col';
+            col_expense.textContent = data.total_expense;
+
+            row.appendChild(col_name);
+            row.appendChild(col_expense);
+
+            card_body.appendChild(row);
+
+            card.appendChild(card_body);
+
+            leaderboard_div.appendChild(card);
           });
-          leaderboard_div.appendChild(ul);
         }
       } catch (error) {
         console.log(error);
