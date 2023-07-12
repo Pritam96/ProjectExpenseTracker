@@ -68,7 +68,6 @@ exports.postLoginUser = async (req, res, next) => {
         success: true,
         token: generateAccessToken(
           user[0].id,
-          user[0].name,
           user[0].email,
           user[0].isPremium
         ),
@@ -80,11 +79,8 @@ exports.postLoginUser = async (req, res, next) => {
   }
 };
 
-function generateAccessToken(id, name, email, isPremium) {
-  return jwt.sign(
-    { id: id, name: name, email: email, isPremium: isPremium },
-    process.env.JWT_KEY_SECRET
-  );
+function generateAccessToken(id, email, isPremium) {
+  return jwt.sign({ id, email, isPremium }, process.env.JWT_KEY_SECRET);
 }
 
 exports.generateAccessToken = generateAccessToken;

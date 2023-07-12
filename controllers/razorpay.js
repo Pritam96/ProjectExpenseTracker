@@ -57,7 +57,6 @@ exports.postTransactionStatus = async (req, res, next) => {
           // create new updated token and send as json
           token: userController.generateAccessToken(
             req.user.id,
-            req.user.name,
             req.user.email,
             req.user.isPremium
           ),
