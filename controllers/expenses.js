@@ -31,6 +31,11 @@ exports.postAddExpense = async (req, res, next) => {
       description: description,
       category: category,
     });
+
+    // updating total expense of user table
+    const updatedTotalExpense = req.user.totalExpense + Number(price);
+    await req.user.update({ totalExpense: updatedTotalExpense });
+
     console.log('Record Added');
     res.status(201).json({ success: true, data: expense });
   } catch (error) {
@@ -45,7 +50,13 @@ exports.postDeleteExpense = async (req, res, next) => {
 
   try {
     const expense = await Expense.findByPk(id);
+    const previousPrice = expense.price;
     const result = await expense.destroy();
+
+    // updating total expense of user table
+    const updatedTotalExpense = req.user.totalExpense - Number(previousPrice);
+    await req.user.update({ totalExpense: updatedTotalExpense });
+
     console.log('Record Deleted');
     res.status(200).json({ success: true, data: {} });
   } catch (error) {
@@ -64,11 +75,18 @@ exports.postEditExpense = async (req, res, next) => {
   try {
     const expense = await Expense.findByPk(id);
 
+    const previousPrice = expense.price;
+
     expense.price = price;
     expense.description = description;
     expense.category = category;
 
     const updatedExpense = await expense.save();
+
+    // updating total expense of user table
+    const updatedTotalExpense =
+      req.user.totalExpense - Number(previousPrice) + Number(price);
+    await req.user.update({ totalExpense: updatedTotalExpense });
 
     console.log('Record Updated');
     res.status(200).json({ success: true, data: updatedExpense });
@@ -87,22 +105,12 @@ exports.getLeaderboard = async (req, res, next) => {
         error: 'the user does not have permission to perform this action',
       });
     }
-
     const leaderboard = await User.findAll({
-      attributes: [
-        'id',
-        'name',
-        [Sequelize.fn('sum', Sequelize.col('price')), 'total_expense'],
-      ],
-      include: [
-        {
-          model: Expense,
-          attributes: [],
-        },
-      ],
-      group: ['user.id'],
-      order: [['total_expense', 'DESC']],
+      attributes: ['id', 'name', 'totalExpense'],
+      order: [['totalExpense', 'DESC']],
     });
+
+    // console.log(leaderboard);
 
     res.status(200).json({
       success: true,

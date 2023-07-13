@@ -220,7 +220,7 @@ async function showAll() {
 
             const col_expense = document.createElement('div');
             col_expense.className = 'col';
-            col_expense.textContent = data.total_expense;
+            col_expense.textContent = data.totalExpense;
 
             row.appendChild(col_name);
             row.appendChild(col_expense);
