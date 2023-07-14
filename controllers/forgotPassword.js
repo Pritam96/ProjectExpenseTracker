@@ -1,5 +1,5 @@
 const uuid = require('uuid');
-const Brevo = require('@getbrevo/brevo');
+const brevo = require('@getbrevo/brevo');
 const bcrypt = require('bcrypt');
 
 const User = require('../models/user');
@@ -17,11 +17,11 @@ exports.postForgotPassword = async (req, res, next) => {
     const id = uuid.v4();
     await user.createForgotPassword({ id, active: true });
 
-    const defaultClient = Brevo.ApiClient.instance;
+    const defaultClient = brevo.ApiClient.instance;
     const apiKey = defaultClient.authentications['api-key'];
     apiKey.apiKey = process.env.BREVO_API_KEY;
 
-    const apiInstance = new Brevo.TransactionalEmailsApi();
+    const apiInstance = new brevo.TransactionalEmailsApi();
 
     const sender = {
       email: 'pritammondal96official@gmail.com',
@@ -42,10 +42,11 @@ exports.postForgotPassword = async (req, res, next) => {
       htmlContent: `<h4>Expense-Tracker Password Reset Link</h4>
       <a href="http://localhost:4000/password/reset/${id}">Reset Password</a>`,
     });
+    console.log('Mail sended successfully: ', response.messageId);
 
     res.status(200).json({ success: true });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     res.status(500).json({ success: false, error: error });
   }
 };
@@ -78,11 +79,11 @@ exports.getResetPassword = async (req, res, next) => {
             <div class="card">
               <div class="card-body">
                 <h2 class="card-title mb-4">Update Your Password</h2>
-                <form action="/password/update/${id}" method="GET" id="reset-form">
+                <form action="/password/update" method="POST" id="reset-form">
                   <div class="row">
                     <div class="col">
                       <div class="mb-3">
-                
+                        <input type="hidden" value="${id}" id="resetPasswordId"/>
                         <label for="newPassword" class="form-label">New Password</label>
                         <input
                           type="password"
@@ -103,6 +104,7 @@ exports.getResetPassword = async (req, res, next) => {
             </div>
           </div>
         </div>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script
           src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
           integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
@@ -111,23 +113,29 @@ exports.getResetPassword = async (req, res, next) => {
         <script>
             const form = document.querySelector('#reset-form');
             form.addEventListener('submit', initiate);
-            function initiate(e){
-              // e.preventDefault();
+            async function initiate(e) {
+              e.preventDefault();
               console.log('called');
+              const password = document.querySelector('#newPassword').value;
+              const resetPasswordId = document.querySelector('#resetPasswordId').value;
+              try {
+                await axios.post('http://localhost:4000/password/update',{resetPasswordId, password });
+                alert('Password Updated Successfully');
+                form.reset();
+              } catch(error) {
+                console.log(error);
+              }
             }
         </script>
       </body>
     </html>
     `);
-    res.end();
   }
 };
 
-// Not Working
-exports.getUpdatePassword = async (req, res, next) => {
-  const newPassword = req.query.newPassword;
-  const resetPasswordId = req.params.id;
-  console.log(newPassword, resetPasswordId);
+exports.postUpdatePassword = async (req, res, next) => {
+  const newPassword = req.body.password;
+  const resetPasswordId = req.body.resetPasswordId;
 
   try {
     const forgotPassword = await ForgotPassword.findOne({
@@ -143,7 +151,7 @@ exports.getUpdatePassword = async (req, res, next) => {
           bcrypt.hash(newPassword, salt, async (err, hash) => {
             if (!err) {
               await user.update({ password: hash });
-              res.status(201), json({ success: true });
+              res.status(201).json({ success: true });
             } else {
               console.log(err);
             }
