@@ -15,7 +15,7 @@ exports.postForgotPassword = async (req, res, next) => {
 
     // User exists
     const id = uuid.v4();
-    await user.createForgotPassword({ id, active: true });
+    await user.createForgotPassword({ id: id, active: true });
 
     const defaultClient = brevo.ApiClient.instance;
     const apiKey = defaultClient.authentications['api-key'];
@@ -53,9 +53,23 @@ exports.postForgotPassword = async (req, res, next) => {
 
 exports.getResetPassword = async (req, res, next) => {
   const id = req.params.id;
-  const row = await ForgotPassword.findOne({ where: { id } });
-  if (row) {
-    row.update({ active: false });
+  const row = await ForgotPassword.findOne({ where: { id: id, active: true } });
+  if (!row) {
+    res.status(404).send(`<!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Reset Password</title>
+      </head>
+      <body>
+        <div class="container">
+          <h3>Your Reset link is expired !!</h3>
+        </div>
+      </body>
+    </html>`);
+  } else {
+    // row.update({ active: false });
     res.status(200).send(`<!DOCTYPE html>
     <html lang="en">
       <head>
@@ -151,6 +165,7 @@ exports.postUpdatePassword = async (req, res, next) => {
           bcrypt.hash(newPassword, salt, async (err, hash) => {
             if (!err) {
               await user.update({ password: hash });
+              forgotPassword.update({ active: false });
               res.status(201).json({ success: true });
             } else {
               console.log(err);
