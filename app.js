@@ -14,6 +14,7 @@ const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
 const checkoutRoutes = require('./routes/razorpay');
 const forgotPasswordRoutes = require('./routes/forgotPassword');
+const ReportsRoutes = require('./routes/report');
 
 const errorHandler = require('./middleware/error');
 
@@ -34,6 +35,7 @@ app.use('/user', userRoutes);
 app.use('/expense', expenseRoutes);
 app.use('/checkout', checkoutRoutes);
 app.use('/password', forgotPasswordRoutes);
+app.use('/reports', ReportsRoutes);
 
 app.use(errorHandler);
 
