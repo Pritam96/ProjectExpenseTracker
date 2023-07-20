@@ -12,7 +12,7 @@ router.get(
   reportController.getDailyReport
 );
 router.get(
-  '/monthlyReport/:month',
+  '/monthlyReport/:yearMonth',
   authMiddleware,
   reportController.getMonthlyReport
 );

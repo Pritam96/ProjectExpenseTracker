@@ -43,11 +43,12 @@ async function getDailyReport(e) {
 
 async function getMonthlyReport(e) {
   e.preventDefault();
-  const month = document.querySelector('#selectedMonth').value;
-  const extractedMonth = month.split('-')[1];
+  const yearMonth = document.querySelector('#selectedMonth').value;
+  console.log(yearMonth);
+  // const extractedMonth = month.split('-')[1];
   try {
     const response = await axios.get(
-      `${BASE_URL}/reports/MonthlyReport/${extractedMonth}`,
+      `${BASE_URL}/reports/MonthlyReport/${yearMonth}`,
       {
         headers: { Authorization: token },
       }
