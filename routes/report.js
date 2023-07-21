@@ -17,4 +17,6 @@ router.get(
   reportController.getMonthlyReport
 );
 
+router.get('/download', authMiddleware, reportController.getDownloadReport);
+
 module.exports = router;

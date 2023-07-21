@@ -44,8 +44,6 @@ async function getDailyReport(e) {
 async function getMonthlyReport(e) {
   e.preventDefault();
   const yearMonth = document.querySelector('#selectedMonth').value;
-  console.log(yearMonth);
-  // const extractedMonth = month.split('-')[1];
   try {
     const response = await axios.get(
       `${BASE_URL}/reports/MonthlyReport/${yearMonth}`,
@@ -87,4 +85,19 @@ function showTable(expense, appendToElement) {
   td_expense.textContent = expense.price;
   tr.append(td_date, td_description, td_category, td_expense);
   appendToElement.appendChild(tr);
+}
+
+const down_button = document.querySelector('#download');
+down_button.addEventListener('click', downloadPdf);
+
+async function downloadPdf() {
+  try {
+    const response = await axios.get(`${BASE_URL}/reports/download`, {
+      headers: { Authorization: token },
+    });
+    window.open(response.data.fileLink, '_blank');
+    console.log('PDF downloaded successfully');
+  } catch (error) {
+    console.log(error);
+  }
 }
