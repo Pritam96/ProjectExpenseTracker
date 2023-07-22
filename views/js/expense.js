@@ -166,31 +166,33 @@ function product(item) {
   card.appendChild(card_body);
 
   document.querySelector('#response').appendChild(card);
-  document.querySelector(
-    '#total'
-  ).innerHTML = `<h5>Total value worth of products: Rs ${total}</h5>`;
+  // document.querySelector(
+  //   '#total'
+  // ).innerHTML = `<h5>Total value worth of products: Rs ${total}</h5>`;
 }
 
-async function showAll() {
-  total = 0;
+async function showAll(currentPage) {
+  // total = 0;
+  const page = currentPage || 1;
   //* getExpenses - get all items
   try {
-    const response = await axios.get(`${BASE_URL}/expense`, {
+    const response = await axios.get(`${BASE_URL}/expense/?page=${page}`, {
       headers: { Authorization: token },
     });
     // console.log(response.data);
-    if (response.data.count === 0) {
+    if (response.data.data.length === 0) {
       document.querySelector('#response').innerHTML = '';
       console.log('NO DATA IS AVAILABLE');
-      document.querySelector(
-        '#total'
-      ).innerHTML = `<h5>Total value worth of products: Rs 0</h5>`;
+      // document.querySelector(
+      //   '#total'
+      // ).innerHTML = `<h5>Total value worth of products: Rs 0</h5>`;
     } else {
       document.querySelector('#response').innerHTML = '';
       response.data.data.forEach((item) => {
-        total += Number(item.price);
+        // total += Number(item.price);
         product(item);
       });
+      showPagination(page, Number(response.data.count));
     }
 
     // check user is premium or not
@@ -273,5 +275,53 @@ async function checkout(e) {
     console.log(error.message);
     alert('Token Authorization Error! Please Login again');
     window.location.href = './signin.html';
+  }
+}
+
+function showPagination(currentPage, totalPages) {
+  document.querySelector('#pagination').innerHTML = '';
+  let nextPage = null;
+  let previousPage = null;
+
+  console.log(Math.floor(totalPages / (currentPage * 5)));
+
+  if (Math.floor(totalPages / 5 > currentPage)) {
+    nextPage = currentPage + 1;
+  }
+  if (currentPage > 1) {
+    previousPage = currentPage - 1;
+  }
+  console.log(previousPage, currentPage, nextPage);
+
+  if (previousPage) {
+    const buttonPreviousCol = document.createElement('div');
+    buttonPreviousCol.className = 'col-auto';
+    const buttonPrevious = document.createElement('button');
+    buttonPrevious.innerHTML = previousPage;
+    buttonPreviousCol.append(buttonPrevious);
+    buttonPrevious.addEventListener('click', () => {
+      showAll(previousPage);
+    });
+    document.querySelector('#pagination').append(buttonPreviousCol);
+  }
+  const buttonCurrentCol = document.createElement('div');
+  buttonCurrentCol.className = 'col-auto';
+  const buttonCurrent = document.createElement('button');
+  buttonCurrent.innerHTML = currentPage;
+  buttonCurrentCol.append(buttonCurrent);
+  buttonCurrent.addEventListener('click', () => {
+    showAll(currentPage);
+  });
+  document.querySelector('#pagination').append(buttonCurrentCol);
+  if (nextPage) {
+    const buttonNextCol = document.createElement('div');
+    buttonNextCol.className = 'col-auto';
+    const buttonNext = document.createElement('button');
+    buttonNext.innerHTML = nextPage;
+    buttonNextCol.append(buttonNext);
+    buttonNext.addEventListener('click', () => {
+      showAll(nextPage);
+    });
+    document.querySelector('#pagination').append(buttonNextCol);
   }
 }

@@ -4,14 +4,20 @@ const sequelize = require('../utils/database');
 
 // GET => / => GET ALL EXPENSES
 exports.getExpenses = async (req, res, next) => {
+  const page = req.query.page || 1;
+  const pageSize = 5;
+  const offset = (page - 1) * pageSize;
+  const limit = pageSize;
+
   try {
-    const expense = await req.user.getExpenses();
+    const totalNumberOfExpenses = await req.user.countExpenses();
+    const expense = await req.user.getExpenses({ limit, offset });
     // console.log(expense);
     res.status(200).json({
       success: true,
-      count: expense.length,
       data: expense,
       userIsPremium: req.user.isPremium,
+      count: totalNumberOfExpenses,
     });
   } catch (error) {
     console.log(error);
