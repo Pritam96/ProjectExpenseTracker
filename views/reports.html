@@ -16,8 +16,50 @@
     <title>Expense Tracker</title>
   </head>
   <body>
-    <div class="container mt-4">
-      <div class="row">
+    <div class="container">
+      <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarTogglerDemo03"
+            aria-controls="navbarTogglerDemo03"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <a class="navbar-brand" href="./expense.html">Expense-Tracker</a>
+
+          <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" href="./expense.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="./reports.html">Reports</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Download Data</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="./leaderboard.html">LeaderBoard</a>
+              </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+              <button
+                class="btn btn-outline-danger my-2 my-sm-0"
+                type="submit"
+                id="logout-button"
+              >
+                Logout
+              </button>
+            </form>
+          </div>
+        </nav>
+      </header>
+      <div class="row mt-3">
         <div class="col-2">
           <form id="sortByDay">
             <label for="selectedDate">Select Date</label>
@@ -40,19 +82,13 @@
             </thead>
             <tbody id="dayWiseTable">
               <!-- <tr>
-                <td>01-03-2021</td>
-                <td>Milk</td>
-                <td>Food</td>
-                <td>60.00</td>
-              </tr> -->
+                  <td>01-03-2021</td>
+                  <td>Milk</td>
+                  <td>Food</td>
+                  <td>60.00</td>
+                </tr> -->
             </tbody>
           </table>
-
-          <div class="mt-3">
-            <button type="submit" id="download" class="btn btn-outline-primary">
-              Download
-            </button>
-          </div>
         </div>
       </div>
 
@@ -84,11 +120,11 @@
             </thead>
             <tbody id="monthWiseTable">
               <!-- <tr>
-                <td>01-03-2021</td>
-                <td>Milk</td>
-                <td>Food</td>
-                <td>60.00</td>
-              </tr> -->
+                  <td>01-03-2021</td>
+                  <td>Milk</td>
+                  <td>Food</td>
+                  <td>60.00</td>
+                </tr> -->
             </tbody>
           </table>
         </div>
@@ -110,5 +146,6 @@
       crossorigin="anonymous"
     ></script>
     <script src="./js/reports.js"></script>
+    <script src="./js/logout.js"></script>
   </body>
 </html>
