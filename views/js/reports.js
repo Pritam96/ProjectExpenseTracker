@@ -86,18 +86,3 @@ function showTable(expense, appendToElement) {
   tr.append(td_date, td_description, td_category, td_expense);
   appendToElement.appendChild(tr);
 }
-
-const down_button = document.querySelector('#download');
-down_button.addEventListener('click', downloadPdf);
-
-async function downloadPdf() {
-  try {
-    const response = await axios.get(`${BASE_URL}/reports/download`, {
-      headers: { Authorization: token },
-    });
-    window.open(response.data.fileLink, '_blank');
-    console.log('PDF downloaded successfully');
-  } catch (error) {
-    console.log(error);
-  }
-}

@@ -70,7 +70,7 @@ exports.getDownloadReport = async (req, res, next) => {
 
     const fileName = `expenses_${Date.now()}.pdf`;
     // Save PDFs in a 'pdfs' folder
-    const filePath = path.join(__dirname, '..', 'pdfs', fileName); 
+    const filePath = path.join(__dirname, '..', 'pdfs', fileName);
 
     // Pipe the PDF to a writable stream to save it as a file
     const writeStream = fs.createWriteStream(filePath);
@@ -95,7 +95,7 @@ exports.getDownloadReport = async (req, res, next) => {
     // Add content to the PDF using the fetched data
     doc.fontSize(14).text('Expense Report', { align: 'center' });
 
-    doc.table(tableArray, { width: 530 });  // table width
+    doc.table(tableArray, { width: 530 }); // table width
 
     // Finalize the PDF
     doc.end();
@@ -105,8 +105,9 @@ exports.getDownloadReport = async (req, res, next) => {
       console.log('PDF generated and saved successfully.');
 
       // Send the file link to the frontend as JSON
-      const fileLink = `/pdfs/${fileName}`;
-      res.json({ success: true, fileLink });
+      // const fileLink = `/pdfs/${fileName}`;
+      // res.json({ success: true, fileLink });
+      res.json({ success: true, fileLink: filePath });
     });
   } catch (error) {
     console.error('Error generating PDF:', error);

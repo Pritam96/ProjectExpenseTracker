@@ -9,3 +9,20 @@ async function logoutUser(e) {
   localStorage.removeItem('rzp_checkout_anon_id');
   window.location.href = './signin.html';
 }
+
+const down_button = document.querySelector('#download');
+down_button.addEventListener('click', downloadPdf);
+
+async function downloadPdf() {
+  try {
+    const response = await axios.get(`${BASE_URL}/reports/download`, {
+      headers: { Authorization: token },
+    });
+    window.open(response.data.fileLink, '_blank');
+    console.log('PDF downloaded successfully');
+  } catch (error) {
+    console.log(error);
+    alert('User needs premium account to access this');
+    window.location.href = './expense.html';
+  }
+}

@@ -40,6 +40,8 @@ async function showLeaderBoard() {
     }
   } catch (error) {
     console.log(error);
+    alert('User needs premium account to access this');
+    window.location.href = './expense.html';
   }
 }
 
