@@ -6,7 +6,8 @@ const submit_button = document.querySelector('#submit-button');
 
 const token = localStorage.getItem('token');
 
-let total = 0;
+// let total = 0;
+let pageSize = 5;
 
 form.addEventListener('submit', addToTheList);
 
@@ -171,14 +172,19 @@ function product(item) {
   // ).innerHTML = `<h5>Total value worth of products: Rs ${total}</h5>`;
 }
 
-async function showAll(currentPage) {
+async function showAll(pageNumber) {
   // total = 0;
-  const page = currentPage || 1;
   //* getExpenses - get all items
+  const currentPage = pageNumber || 1;
   try {
-    const response = await axios.get(`${BASE_URL}/expense/?page=${page}`, {
-      headers: { Authorization: token },
-    });
+    const response = await axios.get(
+      `${BASE_URL}/expense/?page=${currentPage}&pageSize=${pageSize}`,
+      // `${BASE_URL}/expense/?page=${currentPage}`,
+
+      {
+        headers: { Authorization: token },
+      }
+    );
     // console.log(response.data);
     if (response.data.data.length === 0) {
       document.querySelector('#response').innerHTML = '';
@@ -192,7 +198,7 @@ async function showAll(currentPage) {
         // total += Number(item.price);
         product(item);
       });
-      showPagination(page, Number(response.data.count));
+      showPagination(currentPage, Number(response.data.count));
     }
 
     // check user is premium or not
@@ -283,15 +289,13 @@ function showPagination(currentPage, totalPages) {
   let nextPage = null;
   let previousPage = null;
 
-  console.log(Math.floor(totalPages / (currentPage * 5)));
-
-  if (Math.floor(totalPages / 5 > currentPage)) {
+  if (Math.floor(totalPages / pageSize > currentPage)) {
     nextPage = currentPage + 1;
   }
   if (currentPage > 1) {
     previousPage = currentPage - 1;
   }
-  console.log(previousPage, currentPage, nextPage);
+  // console.log(previousPage, currentPage, nextPage);
 
   if (previousPage) {
     const buttonPreviousCol = document.createElement('div');
@@ -325,3 +329,9 @@ function showPagination(currentPage, totalPages) {
     document.querySelector('#pagination').append(buttonNextCol);
   }
 }
+
+const rowButton = document.querySelector('#row-button');
+rowButton.addEventListener('click', () => {
+  pageSize = Number(document.querySelector('#row-per-page').value);
+  showAll();
+});

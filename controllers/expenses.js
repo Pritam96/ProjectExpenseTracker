@@ -4,8 +4,8 @@ const sequelize = require('../utils/database');
 
 // GET => / => GET ALL EXPENSES
 exports.getExpenses = async (req, res, next) => {
-  const page = req.query.page || 1;
-  const pageSize = 5;
+  const page = Number(req.query.page) || 1;
+  const pageSize = Number(req.query.pageSize) || 5;
   const offset = (page - 1) * pageSize;
   const limit = pageSize;
 

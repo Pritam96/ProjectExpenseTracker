@@ -114,7 +114,16 @@
         </div>
 
         <div class="col-8 mt-5">
-          <div class="container" id="response">
+          <label for="row-per-page">Rows per page:</label>
+          <select name="row-per-page" id="row-per-page">
+            <option value="5" selected>5</option>
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+          <button type="button" id="row-button">Show</button>
+          <div class="container mt-3" id="response">
             <!-- <div class="card">
                 <div class="card-body">
                   <div class="row">
