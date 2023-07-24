@@ -44,15 +44,15 @@ exports.postLoginUser = async (req, res, next) => {
   const password = req.body.password;
 
   try {
-    const user = await User.findAll({
+    const user = await User.findOne({
       where: { email: email },
     });
 
-    if (!user[0]) {
+    if (!user) {
       throw 'User with this email id not exist';
     }
 
-    bcrypt.compare(password, user[0].password, (err, data) => {
+    bcrypt.compare(password, user.password, (err, data) => {
       if (err) {
         throw `Something went wrong! ERROR: ${err}`;
         // console.log(err);
@@ -66,11 +66,7 @@ exports.postLoginUser = async (req, res, next) => {
       console.log('User Logged in');
       res.status(201).json({
         success: true,
-        token: generateAccessToken(
-          user[0].id,
-          user[0].email,
-          user[0].isPremium
-        ),
+        token: generateAccessToken(user.id, user.email, user.isPremium),
       });
     });
   } catch (error) {

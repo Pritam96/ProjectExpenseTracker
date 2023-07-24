@@ -15,9 +15,8 @@ exports.getExpenses = async (req, res, next) => {
     // console.log(expense);
     res.status(200).json({
       success: true,
-      data: expense,
-      userIsPremium: req.user.isPremium,
       count: totalNumberOfExpenses,
+      data: expense,
     });
   } catch (error) {
     console.log(error);

@@ -6,6 +6,8 @@ const submit_button = document.querySelector('#submit-button');
 
 const token = localStorage.getItem('token');
 
+const user = parseJwt(token);
+
 // let total = 0;
 let pageSize = 5;
 
@@ -202,8 +204,7 @@ async function showAll(pageNumber) {
     }
 
     // check user is premium or not
-    // console.log(response.data.userIsPremium);
-    if (!response.data.userIsPremium) {
+    if (!user.isPremium) {
       document.querySelector('#rzp-button1').className =
         'btn btn-outline-success mt-5';
     }
@@ -335,3 +336,19 @@ rowButton.addEventListener('click', () => {
   pageSize = Number(document.querySelector('#row-per-page').value);
   showAll();
 });
+
+function parseJwt(token) {
+  var base64Url = token.split('.')[1];
+  var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  var jsonPayload = decodeURIComponent(
+    window
+      .atob(base64)
+      .split('')
+      .map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join('')
+  );
+
+  return JSON.parse(jsonPayload);
+}
