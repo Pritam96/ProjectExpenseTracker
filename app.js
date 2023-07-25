@@ -1,10 +1,20 @@
 require('dotenv').config();
 
+const path = require('path');
+
+const fs = require('fs');
+
 const express = require('express');
 
 // const bodyParser = require('body-parser');
 
 const cors = require('cors');
+
+const helmet = require('helmet');
+
+const compression = require('compression');
+
+const morgan = require('morgan');
 
 const sequelize = require('./utils/database');
 
@@ -24,6 +34,17 @@ const Order = require('./models/order');
 const ForgotPassword = require('./models/forgotPassword');
 
 const app = express();
+
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, 'access.log'),
+  { flags: 'a' }
+);
+
+app.use(morgan('combined', { stream: accessLogStream }));
+
+app.use(helmet());
+
+app.use(compression());
 
 app.use(express.json());
 
