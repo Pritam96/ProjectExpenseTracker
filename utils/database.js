@@ -1,12 +1,12 @@
 const Sequelize = require('sequelize');
 
 const sequelize = new Sequelize(
-  'task-expense-tracker-db',
-  'root',
-  'pritam123',
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
   {
     dialect: 'mysql',
-    host: 'localhost',
+    host: process.env.DB_HOST,
   }
 );
 
