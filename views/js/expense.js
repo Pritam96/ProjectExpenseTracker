@@ -1,5 +1,8 @@
 const BASE_URL = 'http://localhost:4000';
 
+const hidden_input = document.querySelector('#expenseID');
+hidden_input.style.display = 'none';
+
 const form = document.querySelector('#expense-form');
 
 const submit_button = document.querySelector('#submit-button');

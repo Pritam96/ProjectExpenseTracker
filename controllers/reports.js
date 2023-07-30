@@ -5,12 +5,6 @@ const path = require('path');
 
 exports.getDailyReport = async (req, res, next) => {
   try {
-    if (!req.user.isPremium) {
-      return res.status(401).json({
-        success: false,
-        error: 'the user does not have permission to perform this action',
-      });
-    }
     const date = req.params.date;
     const expenses = await req.user.getExpenses({
       where: sequelize.where(
@@ -28,12 +22,6 @@ exports.getDailyReport = async (req, res, next) => {
 
 exports.getMonthlyReport = async (req, res, next) => {
   try {
-    if (!req.user.isPremium) {
-      return res.status(401).json({
-        success: false,
-        error: 'the user does not have permission to perform this action',
-      });
-    }
     const yearMonth = req.params.yearMonth;
     const year = yearMonth.split('-')[0];
     const month = yearMonth.split('-')[1];
@@ -213,6 +201,16 @@ exports.getDownloadReport = async (req, res, next) => {
         res.json({ success: true, fileLink });
       } catch (error) {
         console.error('Error uploading PDF to S3:', error);
+
+        // Delete the locally created pdf if upload fails
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.error(err);
+            return;
+          }
+          console.log('PDF file deleted from local storage');
+        });
+
         res.status(500).json({
           success: false,
           error: 'Error generating PDF.',
