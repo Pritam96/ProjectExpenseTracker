@@ -6,26 +6,16 @@ const fs = require('fs');
 
 const express = require('express');
 
-// const bodyParser = require('body-parser');
-
 const cors = require('cors');
-
-const helmet = require('helmet');
-
-const compression = require('compression');
 
 const morgan = require('morgan');
 
 const sequelize = require('./utils/database');
-
-// const Expense = require('./models/expense');
-
 const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
 const checkoutRoutes = require('./routes/razorpay');
 const forgotPasswordRoutes = require('./routes/forgotPassword');
 const ReportsRoutes = require('./routes/report');
-
 const errorHandler = require('./middleware/error');
 
 const User = require('./models/user');
@@ -42,10 +32,6 @@ const accessLogStream = fs.createWriteStream(
 
 app.use(morgan('combined', { stream: accessLogStream }));
 
-app.use(helmet());
-
-app.use(compression());
-
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: false }));
@@ -57,6 +43,10 @@ app.use('/expense', expenseRoutes);
 app.use('/checkout', checkoutRoutes);
 app.use('/password', forgotPasswordRoutes);
 app.use('/reports', ReportsRoutes);
+
+app.use((req, res, next) => {
+  res.sendFile(path.join(__dirname, `views/${req.url}`));
+});
 
 app.use(errorHandler);
 
