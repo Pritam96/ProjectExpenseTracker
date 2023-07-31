@@ -305,6 +305,7 @@ function showPagination(currentPage, totalPages) {
     const buttonPreviousCol = document.createElement('div');
     buttonPreviousCol.className = 'col-auto';
     const buttonPrevious = document.createElement('button');
+    buttonPrevious.className = 'btn btn-outline-dark';
     buttonPrevious.innerHTML = previousPage;
     buttonPreviousCol.append(buttonPrevious);
     buttonPrevious.addEventListener('click', () => {
@@ -315,6 +316,7 @@ function showPagination(currentPage, totalPages) {
   const buttonCurrentCol = document.createElement('div');
   buttonCurrentCol.className = 'col-auto';
   const buttonCurrent = document.createElement('button');
+  buttonCurrent.className = 'btn btn-outline-dark';
   buttonCurrent.innerHTML = currentPage;
   buttonCurrentCol.append(buttonCurrent);
   buttonCurrent.addEventListener('click', () => {
@@ -325,6 +327,7 @@ function showPagination(currentPage, totalPages) {
     const buttonNextCol = document.createElement('div');
     buttonNextCol.className = 'col-auto';
     const buttonNext = document.createElement('button');
+    buttonNext.className = 'btn btn-outline-dark';
     buttonNext.innerHTML = nextPage;
     buttonNextCol.append(buttonNext);
     buttonNext.addEventListener('click', () => {

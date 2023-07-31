@@ -4,3 +4,5 @@ nodemon.json
 node_modules/
 backup*
 access.log
+expense-tracker.conf
+access.log
