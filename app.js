@@ -16,7 +16,6 @@ const expenseRoutes = require('./routes/expense');
 const checkoutRoutes = require('./routes/razorpay');
 const forgotPasswordRoutes = require('./routes/forgotPassword');
 const ReportsRoutes = require('./routes/report');
-const errorHandler = require('./middleware/error');
 
 const User = require('./models/user');
 const Expense = require('./models/expense');
@@ -47,8 +46,6 @@ app.use('/reports', ReportsRoutes);
 app.use((req, res, next) => {
   res.sendFile(path.join(__dirname, `views/${req.url}`));
 });
-
-app.use(errorHandler);
 
 User.hasMany(Expense);
 Expense.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });

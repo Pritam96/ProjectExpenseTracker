@@ -1,5 +1,4 @@
 const User = require('../models/user');
-const ErrorResponse = require('../utils/errorResponse');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -10,30 +9,43 @@ exports.postCreateUser = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
 
+  if (!(name && email && password)) {
+    return res.status(401).json({
+      success: false,
+      message: 'All input field is required.',
+    });
+  }
+
   try {
-    const saltRounds = 10;
-    bcrypt.hash(password, saltRounds, async (err, hashData) => {
-      if (err) console.log(err);
-      const user = await User.create({
-        name: name,
-        email: email,
-        password: hashData,
+    const oldUser = await User.findOne({ where: { email } });
+    if (oldUser) {
+      return res.status(409).json({
+        success: false,
+        message: 'User Already Exist. Please Login.',
       });
+    }
 
-      console.log('user created');
+    // encrypt password with bcrypt
+    const encryptedPassword = await bcrypt.hash(password, 10); // salt rounds = 10
 
-      res.status(201).json({
-        success: true,
-        data: user,
-      });
+    const user = await User.create({
+      name: name,
+      email: email.toLowerCase(),
+      password: encryptedPassword,
+    });
+
+    console.log('user created');
+
+    res.status(201).json({
+      success: true,
+      message: 'User creation successful.',
+      data: user,
     });
   } catch (error) {
-    next(
-      new ErrorResponse(
-        'this email is already associated with another account',
-        409
-      )
-    );
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
@@ -43,35 +55,43 @@ exports.postLoginUser = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
 
-  try {
-    const user = await User.findOne({
-      where: { email: email },
+  if (!(email && password)) {
+    return res.status(401).json({
+      success: false,
+      message: 'All input field is required.',
     });
+  }
 
-    if (!user) {
-      throw 'User with this email id not exist';
-    }
+  try {
+    const user = await User.findOne({ where: { email } });
 
-    bcrypt.compare(password, user.password, (err, data) => {
-      if (err) {
-        throw `Something went wrong! ERROR: ${err}`;
-        // console.log(err);
-      }
-      if (!data) {
-        return res.status(400).json({
+    if (user) {
+      const isPasswordMatched = await bcrypt.compare(password, user.password);
+      if (isPasswordMatched) {
+        console.log('user logged in');
+
+        res.status(201).json({
+          success: true,
+          message: 'Login successful.',
+          token: generateAccessToken(user.id, user.email, user.isPremium),
+        });
+      } else {
+        return res.status(401).json({
           success: false,
-          error: 'Incorrect password',
+          message: 'Invalid Login Credentials',
         });
       }
-      console.log('User Logged in');
-      res.status(201).json({
-        success: true,
-        token: generateAccessToken(user.id, user.email, user.isPremium),
+    } else {
+      return res.status(404).json({
+        success: false,
+        message: 'User does not exist. Please create an account.',
       });
-    });
+    }
   } catch (error) {
-    next(new ErrorResponse(error, 409));
-    // console.log(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 

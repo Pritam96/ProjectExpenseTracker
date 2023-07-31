@@ -16,12 +16,11 @@ async function loginUser(e) {
       email,
       password,
     });
-    // console.log(result.data.user[0].id);
     localStorage.setItem('token', response.data.token);
     window.location.href = './expense.html';
   } catch (error) {
-    // fadeAlert('alert alert-danger', error.response.data.error, 5000);
-    console.log(error);
+    // console.log(error.response.data.message);
+    fadeAlert('alert alert-danger', error.response.data.message, 4000);
   }
 }
 
