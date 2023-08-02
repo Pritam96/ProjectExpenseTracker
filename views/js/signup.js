@@ -1,5 +1,3 @@
-const BASE_URL = 'http://localhost:4000';
-
 const form = document.querySelector('#signup-form');
 
 const alert_content = document.querySelector('#alert');
@@ -23,7 +21,7 @@ async function createUser(e) {
     fadeAlert('alert alert-success', result.data.message, 3000);
     window.location.href = './signin.html';
   } catch (error) {
-    // console.log(error.response.data.message);
+    console.log(error.message);
     fadeAlert('alert alert-danger', error.response.data.message, 4000);
   }
 }

@@ -1,7 +1,3 @@
-const BASE_URL = 'http://localhost:4000';
-
-const token = localStorage.getItem('token');
-
 const date_form = document.querySelector('#sortByDay');
 
 const month_form = document.querySelector('#sortByMonth');

@@ -1,5 +1,3 @@
-const BASE_URL = 'http://localhost:4000';
-
 const form = document.querySelector('#forgotPassword-form');
 
 form.addEventListener('submit', forgotPassword);

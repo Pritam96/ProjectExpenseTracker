@@ -1,5 +1,3 @@
-const BASE_URL = 'http://localhost:4000';
-
 const form = document.querySelector('#signin-form');
 
 const alert_content = document.querySelector('#alert');
@@ -19,7 +17,7 @@ async function loginUser(e) {
     localStorage.setItem('token', response.data.token);
     window.location.href = './expense.html';
   } catch (error) {
-    // console.log(error.response.data.message);
+    console.log(error.message);
     fadeAlert('alert alert-danger', error.response.data.message, 4000);
   }
 }

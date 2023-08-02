@@ -1,5 +1,3 @@
-const BASE_URL = 'http://localhost:4000';
-const token = localStorage.getItem('token');
 const leaderboard_div = document.querySelector('#leaderboard_response');
 
 async function showLeaderBoard() {
@@ -39,8 +37,7 @@ async function showLeaderBoard() {
       });
     }
   } catch (error) {
-    console.log(error);
-    alert('User needs premium account to access this');
+    console.log(error.message);
     window.location.href = './expense.html';
   }
 }

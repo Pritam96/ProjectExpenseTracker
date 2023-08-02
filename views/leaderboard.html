@@ -6,6 +6,12 @@
 
     <link rel="shortcut icon" href="#" />
 
+    <style>
+      .navbar-nav button {
+        border-style: none !important;
+      }
+    </style>
+
     <!-- Bootstrap CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -17,9 +23,9 @@
   </head>
   <body>
     <header>
-      <nav class="navbar navbar-expand-lg navbar-light bg-light m-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <button
-          class="navbar-toggler"
+          class="navbar-toggler m-2"
           type="button"
           data-toggle="collapse"
           data-target="#navbarTogglerDemo03"
@@ -29,34 +35,39 @@
         >
           <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand" href="./expense.html">Expense-Tracker</a>
+        <h2 class="navbar-brand m-2">Expense-Tracker</h2>
 
         <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-          <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+          <ul class="navbar-nav mr-auto mt-2 ml-2 mt-lg-0">
             <li class="nav-item">
-              <a class="nav-link" href="./expense.html">Home</a>
+              <button class="nav-link btn-dark m-2" id="homepage">Home</button>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="./reports.html">Reports</a>
+              <button class="nav-link btn-dark m-2" id="reports">
+                Reports
+              </button>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#" id="download">Download Data</a>
+              <button class="nav-link btn-dark m-2" id="download">
+                Download Reports
+              </button>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="./leaderboard.html"
-                >LeaderBoard</a
-              >
+              <button class="nav-link btn-dark m-2 active" id="leaderboard">
+                LeaderBoard
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link btn-dark m-2" id="buy-premium">
+                Buy Premium
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link btn-dark m-2" id="logout-button">
+                Logout
+              </button>
             </li>
           </ul>
-          <form class="form-inline my-2 my-lg-0">
-            <button
-              class="btn btn-outline-danger my-2 my-sm-0"
-              type="submit"
-              id="logout-button"
-            >
-              Logout
-            </button>
-          </form>
         </div>
       </nav>
     </header>
@@ -90,6 +101,9 @@
       </div>
     </div>
 
+    <!-- Razorpay CDN -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
     <!-- Axios CDN -->
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"
@@ -104,7 +118,8 @@
       integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
       crossorigin="anonymous"
     ></script>
+    <script src="./js/main.js"></script>
+    <script src="./js/navbar.js"></script>
     <script src="./js/leaderboard.js"></script>
-    <script src="./js/logout.js"></script>
   </body>
 </html>
