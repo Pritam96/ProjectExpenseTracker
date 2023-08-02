@@ -72,39 +72,28 @@ async function addToTheList(e) {
 }
 
 function product(item) {
-  const card = document.createElement('div');
-  card.className = 'card';
-  // It requires to disable the card at the time of edit
-  card.setAttribute('id', `card_${item.id}`);
+  const tr = document.createElement('tr');
+  // It requires to disable the table row at the time of edit
+  tr.setAttribute('id', `tr_${item.id}`);
 
-  const card_body = document.createElement('div');
-  card_body.className = 'card-body';
+  const price_td = document.createElement('td');
+  price_td.appendChild(document.createTextNode(`${item.price}`));
 
-  const row = document.createElement('div');
-  row.className = 'row';
-
-  const price_col = document.createElement('div');
-  price_col.className = 'col';
-  price_col.appendChild(document.createTextNode(`${item.price} Rupees`));
-
-  const description_col = document.createElement('div');
-  description_col.className = 'col';
-  description_col.appendChild(document.createTextNode(`${item.description}`));
+  const description_td = document.createElement('td');
+  description_td.appendChild(document.createTextNode(`${item.description}`));
 
   // category column
-  const category_col = document.createElement('div');
-  category_col.className = 'col';
-  category_col.appendChild(document.createTextNode(`${item.category}`));
+  const category_td = document.createElement('td');
+  category_td.appendChild(document.createTextNode(`${item.category}`));
 
   // Delete Button
-  const delete_div = document.createElement('div');
-  delete_div.className = 'col';
+  const delete_td = document.createElement('td');
   const delete_button = document.createElement('button');
   delete_button.className = 'btn btn-outline-secondary';
   // It requires to disable the delete button at the time of edit
   delete_button.setAttribute('id', `delete_button_${item.id}`);
   delete_button.appendChild(document.createTextNode('Delete'));
-  delete_div.appendChild(delete_button);
+  delete_td.appendChild(delete_button);
 
   delete_button.onclick = () => {
     deleteItem();
@@ -127,14 +116,13 @@ function product(item) {
   };
 
   // Edit Button
-  const edit_div = document.createElement('div');
-  edit_div.className = 'col';
+  const edit_td = document.createElement('td');
   const edit_button = document.createElement('button');
   edit_button.className = 'btn btn-outline-warning';
   // It requires to disable the edit button at the time of edit
   edit_button.setAttribute('id', `edit_button_${item.id}`);
   edit_button.appendChild(document.createTextNode('Edit'));
-  edit_div.appendChild(edit_button);
+  edit_td.appendChild(edit_button);
 
   edit_button.onclick = () => {
     document.querySelector('#expenseID').value = item.id;
@@ -145,9 +133,9 @@ function product(item) {
     submit_button.className = 'btn btn-outline-warning mt-4';
     submit_button.textContent = 'Edit Expense';
 
-    // Hide / Highlight the current row & disable the buttons
-    const the_row = document.querySelector(`#card_${item.id}`);
-    the_row.className = 'card text-white bg-secondary';
+    // Hide / Highlight the current table row & disable the buttons
+    const the_tr = document.querySelector(`#tr_${item.id}`);
+    the_tr.className = 'text-white bg-secondary';
     // disable the buttons
     document
       .querySelector(`#delete_button_${item.id}`)
@@ -155,16 +143,13 @@ function product(item) {
     document.querySelector(`#edit_button_${item.id}`).classList.add('disabled');
   };
 
-  row.appendChild(price_col);
-  row.appendChild(description_col);
-  row.appendChild(category_col);
-  row.appendChild(delete_div);
-  row.appendChild(edit_div);
+  tr.appendChild(price_td);
+  tr.appendChild(description_td);
+  tr.appendChild(category_td);
+  tr.appendChild(delete_td);
+  tr.appendChild(edit_td);
 
-  card_body.appendChild(row);
-  card.appendChild(card_body);
-
-  document.querySelector('#response').appendChild(card);
+  document.querySelector('#response').appendChild(tr);
 }
 
 async function showAll(pageNumber) {
@@ -178,8 +163,9 @@ async function showAll(pageNumber) {
       }
     );
     if (response.data.data.length === 0) {
-      document.querySelector('#response').innerHTML = '';
       console.log('NO DATA IS AVAILABLE');
+      document.querySelector('#response').innerHTML =
+        '<tr><td colspan="5"><p class="h6">No Data is Available. Please add one!</p></td></tr>';
     } else {
       document.querySelector('#response').innerHTML = '';
       response.data.data.forEach((item) => {

@@ -27,10 +27,16 @@ async function getDailyReport(e) {
         showTable(expense, dayTableSection);
       });
     } else {
-      const p = document.createElement('p');
-      p.textContent = 'No data available for this date.';
       dayTableSection.textContent = '';
-      dayTableSection.appendChild(p);
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.setAttribute('colspan', '4');
+      const p = document.createElement('p');
+      p.className = 'h6';
+      p.textContent = 'No data available for this date.';
+      td.appendChild(p);
+      tr.appendChild(td);
+      dayTableSection.appendChild(tr);
     }
   } catch (error) {
     console.log(error.message);
@@ -54,10 +60,16 @@ async function getMonthlyReport(e) {
         showTable(expense, monthTableSection);
       });
     } else {
-      const p = document.createElement('p');
-      p.textContent = 'No data available for this month.';
       monthTableSection.textContent = '';
-      monthTableSection.appendChild(p);
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.setAttribute('colspan', '4');
+      const p = document.createElement('p');
+      p.className = 'h6';
+      p.textContent = 'No data available for this month.';
+      td.appendChild(p);
+      tr.appendChild(td);
+      monthTableSection.appendChild(tr);
     }
   } catch (error) {
     console.log(error.message);
