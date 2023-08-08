@@ -35,8 +35,8 @@ async function addToTheList(e) {
       console.log('Record Added');
       showAll();
     } catch (error) {
-      console.log(error.message);
-      alert('Token Authorization Error! Please Login again');
+      console.log(error.response.data.message);
+      alert('Something went wrong!');
       window.location.href = './signin.html';
     }
   } else {
@@ -64,8 +64,8 @@ async function addToTheList(e) {
 
       showAll();
     } catch (error) {
-      console.log(error.message);
-      alert('Token Authorization Error! Please Login again');
+      console.log(error.response.data.message);
+      alert('Something went wrong!');
       window.location.href = './signin.html';
     }
   }
@@ -77,7 +77,7 @@ function product(item) {
   tr.setAttribute('id', `tr_${item.id}`);
 
   const price_td = document.createElement('td');
-  price_td.appendChild(document.createTextNode(`${item.price}`));
+  price_td.appendChild(document.createTextNode(`\u20B9${item.price}`));
 
   const description_td = document.createElement('td');
   description_td.appendChild(document.createTextNode(`${item.description}`));
@@ -108,8 +108,8 @@ function product(item) {
         console.log('Record Deleted');
         showAll();
       } catch (error) {
-        console.log(error.message);
-        alert('Token Authorization Error! Please Login again');
+        console.log(error.response.data.message);
+        alert('Something went wrong!');
         window.location.href = './signin.html';
       }
     }
@@ -174,8 +174,8 @@ async function showAll(pageNumber) {
       showPagination(currentPage, Number(response.data.count));
     }
   } catch (error) {
-    console.log(error.message);
-    alert('Token Authorization Error! Please Login again');
+    console.log(error.response.data.message);
+    alert('Something went wrong!');
     window.location.href = './signin.html';
   }
 }

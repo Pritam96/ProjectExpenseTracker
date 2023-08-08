@@ -2,8 +2,7 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-// @desc Create new user
-// @route POST /user/add
+// POST => /user/add => CREATE NEW USER
 exports.postCreateUser = async (req, res, next) => {
   const name = req.body.name;
   const email = req.body.email;
@@ -42,6 +41,7 @@ exports.postCreateUser = async (req, res, next) => {
       data: user,
     });
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -49,8 +49,7 @@ exports.postCreateUser = async (req, res, next) => {
   }
 };
 
-// @desc User Login
-// @route POST /user/login
+// POST => /user/login => LOGIN USER
 exports.postLoginUser = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -78,16 +77,17 @@ exports.postLoginUser = async (req, res, next) => {
       } else {
         return res.status(401).json({
           success: false,
-          message: 'Invalid Login Credentials',
+          message: 'Invalid login credentials',
         });
       }
     } else {
-      return res.status(404).json({
+      return res.status(401).json({
         success: false,
-        message: 'User does not exist. Please create an account.',
+        message: 'Invalid login credentials',
       });
     }
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -95,6 +95,7 @@ exports.postLoginUser = async (req, res, next) => {
   }
 };
 
+// GENERATE JWT TOKEN
 function generateAccessToken(id, email, isPremium) {
   return jwt.sign({ id, email, isPremium }, process.env.JWT_KEY_SECRET, {
     expiresIn: '1d',

@@ -8,7 +8,7 @@ async function showLeaderBoard() {
 
     if (response.data.data.length > 0) {
       leaderboard_div.textContent = '';
-      response.data.data.forEach((data) => {
+      response.data.data.forEach((data, index) => {
         const card = document.createElement('div');
         card.className = 'card';
 
@@ -18,14 +18,19 @@ async function showLeaderBoard() {
         const row = document.createElement('div');
         row.className = 'row';
 
+        const col_index = document.createElement('div');
+        col_index.className = 'col';
+        col_index.textContent = `#${+index + 1}`;
+
         const col_name = document.createElement('div');
         col_name.className = 'col';
         col_name.textContent = data.name;
 
         const col_expense = document.createElement('div');
         col_expense.className = 'col';
-        col_expense.textContent = data.totalExpense;
+        col_expense.textContent = `\u20B9${data.totalExpense}`;
 
+        row.appendChild(col_index);
         row.appendChild(col_name);
         row.appendChild(col_expense);
 
@@ -37,7 +42,8 @@ async function showLeaderBoard() {
       });
     }
   } catch (error) {
-    console.log(error.message);
+    console.log(error.response.data.message);
+    alert('Something went wrong!');
     window.location.href = './expense.html';
   }
 }

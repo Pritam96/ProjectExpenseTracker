@@ -2,29 +2,32 @@ const Expense = require('../models/expense');
 const User = require('../models/user');
 const sequelize = require('../utils/database');
 
-// GET => / => GET ALL EXPENSES
+// GET => /expense/?page=<value> & pageSize=<value> => GET ALL EXPENSES
 exports.getExpenses = async (req, res, next) => {
-  const page = Number(req.query.page) || 1;
-  const pageSize = Number(req.query.pageSize) || 5;
+  const page = Number(req.query.page) || 1; // Current page number
+  const pageSize = Number(req.query.pageSize) || 5; // Rows per page
   const offset = (page - 1) * pageSize;
   const limit = pageSize;
 
   try {
     const totalNumberOfExpenses = await req.user.countExpenses();
-    const expense = await req.user.getExpenses({ limit, offset });
-    // console.log(expense);
+    const expense = await req.user.getExpenses({
+      limit,
+      offset,
+      order: [['createdAt', 'DESC']],
+    });
     res.status(200).json({
       success: true,
       count: totalNumberOfExpenses,
       data: expense,
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, error: error });
+    console.log(error.message);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// POST => / => CREATE AN EXPENSE
+// POST => /expense/ => CREATE AN EXPENSE
 exports.postAddExpense = async (req, res, next) => {
   const t = await sequelize.transaction();
 
@@ -50,16 +53,20 @@ exports.postAddExpense = async (req, res, next) => {
     );
 
     await t.commit();
-    console.log('Record Added');
-    res.status(201).json({ success: true, data: expense });
+
+    res.status(201).json({
+      success: true,
+      message: 'Expense added successfully.',
+      data: expense,
+    });
   } catch (error) {
     await t.rollback();
-    console.log(error);
-    res.status(500).json({ success: false, error: error });
+    console.log(error.message);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// POST => /delete/<id> => DELETE AN EXPENSE
+// POST => /expense/delete/<id> => DELETE AN EXPENSE
 exports.postDeleteExpense = async (req, res, next) => {
   const t = await sequelize.transaction();
   const id = req.params.id;
@@ -77,16 +84,20 @@ exports.postDeleteExpense = async (req, res, next) => {
     );
 
     await t.commit();
-    console.log('Record Deleted');
-    res.status(200).json({ success: true, data: {} });
+
+    res.status(200).json({
+      success: true,
+      message: 'Expense deleted successfully.',
+      data: {},
+    });
   } catch (error) {
     await t.rollback();
-    console.log(error);
-    res.status(500).json({ success: false, error: error });
+    console.log(error.message);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// POST => /edit => EDIT AN EXPENSE
+// POST => /expense/edit => EDIT AN EXPENSE
 exports.postEditExpense = async (req, res, next) => {
   const t = await sequelize.transaction();
 
@@ -97,7 +108,6 @@ exports.postEditExpense = async (req, res, next) => {
 
   try {
     const expense = await Expense.findByPk(id);
-
     const previousPrice = expense.price;
 
     expense.price = price;
@@ -115,22 +125,26 @@ exports.postEditExpense = async (req, res, next) => {
     );
 
     await t.commit();
-    console.log('Record Updated');
-    res.status(200).json({ success: true, data: updatedExpense });
+
+    res.status(200).json({
+      success: true,
+      message: 'Expense updated successfully.',
+      data: updatedExpense,
+    });
   } catch (error) {
     await t.rollback();
-    console.log(error);
-    res.status(500).json({ success: false, error: error });
+    console.log(error.message);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// GET => /leaderboard => GET THE LEADER-BOARD
+// GET => /expense/leaderboard => GET THE LEADER-BOARD
 exports.getLeaderboard = async (req, res, next) => {
   try {
     if (!req.user.isPremium) {
       return res.status(403).json({
         success: false,
-        error: 'the user does not have permission to perform this action',
+        message: 'The user does not have permission to perform this action.',
       });
     }
     const leaderboard = await User.findAll({
@@ -138,14 +152,12 @@ exports.getLeaderboard = async (req, res, next) => {
       order: [['totalExpense', 'DESC']],
     });
 
-    // console.log(leaderboard);
-
     res.status(200).json({
       success: true,
       data: leaderboard,
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, error: error });
+    console.log(error.message);
+    res.status(500).json({ success: false, message: error.message });
   }
 };

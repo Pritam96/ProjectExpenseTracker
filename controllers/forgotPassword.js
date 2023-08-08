@@ -5,12 +5,15 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const ForgotPassword = require('../models/forgotPassword');
 
+// POST => /password/forgot => INITIATE BREVO INSTANCE & SEND RESET PASSWORD MAIL
 exports.postForgotPassword = async (req, res, next) => {
   try {
     const user = await User.findOne({ where: { email: req.body.email } });
     if (!user) {
-      console.log('User with this email id not exists');
-      return;
+      return res.status(404).json({
+        success: true,
+        message: 'User with this email id not exists.',
+      });
     }
 
     // User exists
@@ -37,20 +40,24 @@ exports.postForgotPassword = async (req, res, next) => {
     const response = await apiInstance.sendTransacEmail({
       sender,
       to: receivers,
-      subject: 'Sending with Brevo',
-      textContent: 'reset password',
-      htmlContent: `<h4>Expense-Tracker Password Reset Link</h4>
+      subject: 'Expense-Tracker password reset link',
+      textContent: 'Reset password',
+      htmlContent: `<h4>Expense-Tracker password reset link</h4>
       <a href="http://localhost:4000/password/reset/${id}">Reset Password</a>`,
     });
-    console.log('Mail sended successfully: ', response.messageId);
 
-    res.status(200).json({ success: true });
+    res.status(200).json({
+      success: true,
+      data: response.messageId,
+      message: 'Password reset email sended successfully.',
+    });
   } catch (error) {
     console.log(error.message);
-    res.status(500).json({ success: false, error: error });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
+// GET => /password/reset/<id> => GET RESET PASSWORD FORM
 exports.getResetPassword = async (req, res, next) => {
   const id = req.params.id;
   const row = await ForgotPassword.findOne({ where: { id: id, active: true } });
@@ -88,8 +95,8 @@ exports.getResetPassword = async (req, res, next) => {
         <title>Reset Password</title>
       </head>
       <body>
-        <div class="container">
-          <div class="col-xl-6 col-sm-8 m-4">
+        <div class="container d-flex justify-content-center align-items-center vh-100">
+          <div class="col-10 col-sm-8 col-lg-5 col-xl-5">
             <div class="card">
               <div class="card-body">
                 <h2 class="card-title mb-4">Update Your Password</h2>
@@ -147,6 +154,7 @@ exports.getResetPassword = async (req, res, next) => {
   }
 };
 
+// POST => /password/update => UPDATE USER WITH NEW PASSWORD
 exports.postUpdatePassword = async (req, res, next) => {
   const newPassword = req.body.password;
   const resetPasswordId = req.body.resetPasswordId;
@@ -159,27 +167,21 @@ exports.postUpdatePassword = async (req, res, next) => {
     const user = await User.findOne({ where: { id: forgotPassword.userId } });
 
     if (user) {
-      const saltRounds = 10;
-      bcrypt.genSalt(saltRounds, (err, salt) => {
-        if (!err) {
-          bcrypt.hash(newPassword, salt, async (err, hash) => {
-            if (!err) {
-              await user.update({ password: hash });
-              forgotPassword.update({ active: false });
-              res.status(201).json({ success: true });
-            } else {
-              console.log(err);
-            }
-          });
-        } else {
-          console.log(err);
-        }
+      const encryptedPassword = await bcrypt.hash(newPassword, 10);
+      const updatedUser = await user.update({ password: encryptedPassword });
+      await forgotPassword.update({ active: false });
+      res.status(201).json({
+        success: true,
+        message: 'Password update successful.',
+        data: updatedUser,
       });
     } else {
-      return res.status(404).json({ success: false, error: 'No user Exists' });
+      return res
+        .status(404)
+        .json({ success: false, message: 'User not found.' });
     }
   } catch (error) {
-    console.log(error);
-    return res.status(403).json({ success: false, error });
+    console.log(error.message);
+    return res.status(403).json({ success: false, message: error.message });
   }
 };

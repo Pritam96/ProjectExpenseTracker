@@ -10,10 +10,12 @@ async function forgotPassword(e) {
     const response = await axios.post(`${BASE_URL}/password/forgot`, {
       email,
     });
-    alert('Check Your Inbox');
+    alert(
+      'Password reset link has been sent to your email. Please check you email.'
+    );
     window.location.href = './signin.html';
   } catch (error) {
-    // fadeAlert('alert alert-danger', error.response.data.error, 5000);
-    console.log(error);
+    console.log(error.response.data.message);
+    alert('Something went wrong!');
   }
 }

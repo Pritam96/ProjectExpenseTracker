@@ -26,6 +26,18 @@ async function getDailyReport(e) {
       response.data.data.forEach((expense) => {
         showTable(expense, dayTableSection);
       });
+
+      // Adding last row (show total expenses)
+      const tr = document.createElement('tr');
+      const td1 = document.createElement('td');
+      const td2 = document.createElement('td');
+      const td3 = document.createElement('td');
+      const td4 = document.createElement('td');
+      td3.innerHTML = '<strong>Total Expenses</strong>';
+      td4.innerHTML = `<strong>\u20B9${response.data.total}</strong>`;
+      tr.className = 'table-success text-danger';
+      tr.append(td1, td2, td3, td4);
+      dayTableSection.appendChild(tr);
     } else {
       dayTableSection.textContent = '';
       const tr = document.createElement('tr');
@@ -39,7 +51,8 @@ async function getDailyReport(e) {
       dayTableSection.appendChild(tr);
     }
   } catch (error) {
-    console.log(error.message);
+    console.log(error.response.data.message);
+    alert('Something went wrong!');
   }
 }
 
@@ -59,6 +72,18 @@ async function getMonthlyReport(e) {
       response.data.data.forEach((expense) => {
         showTable(expense, monthTableSection);
       });
+
+      // Adding last row (show total expenses)
+      const tr = document.createElement('tr');
+      const td1 = document.createElement('td');
+      const td2 = document.createElement('td');
+      const td3 = document.createElement('td');
+      const td4 = document.createElement('td');
+      td3.innerHTML = '<strong>Total Expenses</strong>';
+      td4.innerHTML = `<strong>\u20B9${response.data.total}</strong>`;
+      tr.className = 'table-success text-danger';
+      tr.append(td1, td2, td3, td4);
+      monthTableSection.appendChild(tr);
     } else {
       monthTableSection.textContent = '';
       const tr = document.createElement('tr');
@@ -72,7 +97,8 @@ async function getMonthlyReport(e) {
       monthTableSection.appendChild(tr);
     }
   } catch (error) {
-    console.log(error.message);
+    console.log(error.response.data.message);
+    alert('Something went wrong!');
   }
 }
 
@@ -90,7 +116,7 @@ function showTable(expense, appendToElement) {
   const td_category = document.createElement('td');
   td_category.textContent = expense.category;
   const td_expense = document.createElement('td');
-  td_expense.textContent = expense.price;
+  td_expense.textContent = `\u20B9${expense.price}`;
   tr.append(td_date, td_description, td_category, td_expense);
   appendToElement.appendChild(tr);
 }

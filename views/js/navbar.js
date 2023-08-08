@@ -44,8 +44,8 @@ async function downloadPdf() {
     window.open(response.data.fileLink, '_blank');
     console.log('PDF downloaded successfully');
   } catch (error) {
-    console.log(error.message);
-    window.location.href = './expense.html';
+    console.log(error.response.data.message);
+    alert('Something went wrong!');
   }
 }
 
@@ -89,6 +89,7 @@ async function buyPremium() {
 
       // handles successful payment
       handler: async function (response) {
+        // to update the payment status
         const update = await axios.post(
           `${BASE_URL}/checkout/update`,
           {
@@ -115,6 +116,9 @@ async function buyPremium() {
     };
 
     const rzp1 = new Razorpay(options);
+
+    // calling razorpay instance to open
+    // the payment dialog for the user to make the payment
     rzp1.open();
 
     rzp1.on('payment.failed', function (response) {
