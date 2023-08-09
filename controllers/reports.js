@@ -1,4 +1,5 @@
 const sequelize = require('../utils/database');
+const Sequelize = require('sequelize');
 const PDFDocument = require('pdfkit-table');
 const fs = require('fs');
 const path = require('path');
@@ -8,13 +9,15 @@ const { PassThrough } = require('stream');
 // GET => /reports/dailyReport/<date> => GET EXPENSES BY DATE
 exports.getDailyReport = async (req, res, next) => {
   try {
-    const date = req.params.date;
+    const startDate = req.query.startDate;
+    const endDate = req.query.endDate;
+
     const expenses = await req.user.getExpenses({
-      where: sequelize.where(
-        sequelize.fn('date', sequelize.col('createdAt')),
-        '=',
-        date
-      ),
+      where: {
+        createdAt: {
+          [Sequelize.Op.between]: [startDate, endDate],
+        },
+      },
       order: [['createdAt', 'ASC']],
     });
 
@@ -88,6 +91,11 @@ exports.getDownloadReport = async (req, res, next) => {
       order: [['createdAt', 'DESC']],
     });
 
+    let totalExpense = 0;
+    expenses.forEach((expense) => {
+      totalExpense += +expense.price;
+    });
+
     // Create a new PDF document
     const doc = new PDFDocument({ margin: 30, size: 'A4' });
 
@@ -110,8 +118,11 @@ exports.getDownloadReport = async (req, res, next) => {
       ]);
     });
 
+    // Push the last row (Total Expenses)
+    tableData.push(['', '', 'Total Expenses:', totalExpense]);
+
     const tableArray = {
-      headers: ['Date', 'Description', 'Category', 'Amount'],
+      headers: ['Date', 'Description', 'Category', 'Amount (Rs.)'],
       rows: tableData,
     };
 

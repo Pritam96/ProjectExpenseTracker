@@ -6,12 +6,8 @@ const authMiddleware = require('../middleware/auth');
 
 const router = express.Router();
 
-// GET => /dailyReport/<date> => GET EXPENSES BY DATE
-router.get(
-  '/dailyReport/:date',
-  authMiddleware,
-  reportController.getDailyReport
-);
+// GET => /dailyReport/?startDate=<date>&endDate=<date> => GET EXPENSES BY DATE
+router.get('/dailyReport', authMiddleware, reportController.getDailyReport);
 
 // GET => /monthlyReport/<month> => GET EXPENSES BY MONTH
 router.get(

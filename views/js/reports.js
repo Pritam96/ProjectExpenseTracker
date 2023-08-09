@@ -12,10 +12,11 @@ month_form.addEventListener('submit', getMonthlyReport);
 
 async function getDailyReport(e) {
   e.preventDefault();
-  const date = document.querySelector('#selectedDate').value;
+  const startDate = document.querySelector('#selectedStartDate').value;
+  const endDate = document.querySelector('#selectedEndDate').value;
   try {
     const response = await axios.get(
-      `${BASE_URL}/reports/dailyReport/${date}`,
+      `${BASE_URL}/reports/dailyReport/?startDate=${startDate}&endDate=${endDate}`,
       {
         headers: { Authorization: token },
       }
