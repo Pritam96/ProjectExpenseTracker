@@ -52,16 +52,11 @@
               </button>
             </li>
             <li class="nav-item">
-              <button class="nav-link btn-dark m-2" id="download">
-                Download Reports
-              </button>
-            </li>
-            <li class="nav-item">
               <button class="nav-link btn-dark m-2" id="leaderboard">
                 LeaderBoard
               </button>
             </li>
-            <li class="nav-item" id="nav-item-buy-premium">
+            <li class="nav-item visually-hidden" id="nav-item-buy-premium">
               <button class="nav-link btn-dark m-2" id="buy-premium">
                 Buy Premium
               </button>
@@ -83,6 +78,15 @@
             <!-- hidden input-field for id -->
             <input type="text" id="expenseID" />
             <div class="mt-3">
+              <label for="price" class="form-label">Expense Amount</label>
+              <input
+                type="number"
+                class="form-control"
+                id="price"
+                placeholder="Eg: 10000"
+              />
+            </div>
+            <div class="mt-3">
               <label for="description" class="form-label">Description</label>
               <input
                 type="text"
@@ -92,16 +96,6 @@
                 required
               />
             </div>
-            <div class="mt-3">
-              <label for="price" class="form-label">Expense Amount</label>
-              <input
-                type="number"
-                class="form-control"
-                id="price"
-                placeholder="Eg: 10000"
-              />
-            </div>
-
             <div class="mt-3">
               <label for="category" class="form-label">Category</label>
               <select class="form-select input-group" id="category">
@@ -145,13 +139,6 @@
                 <option value="50">50</option>
                 <option value="100">100</option>
               </select>
-              <button
-                type="button"
-                class="btn btn-outline-dark m-2"
-                id="row-button"
-              >
-                Show
-              </button>
             </form>
           </div>
 

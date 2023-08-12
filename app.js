@@ -1,13 +1,14 @@
+// Load env vars
 require('dotenv').config();
 
 const path = require('path');
-
 const express = require('express');
+const cors = require('cors');
 
-const bodyParser = require('body-parser');
-
+// Connect to DB
 const sequelize = require('./utils/database');
 
+// Route files
 const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
 const checkoutRoutes = require('./routes/razorpay');
@@ -16,28 +17,19 @@ const ReportsRoutes = require('./routes/report');
 
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: false }));
+// Body parser
+app.use(express.json());
 
-app.use(bodyParser.json());
+// Enable CORS
+app.use(cors());
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-  );
-  if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE');
-    return res.status(200).json({});
-  }
-  next();
-});
-
+// Model files
 const User = require('./models/user');
 const Expense = require('./models/expense');
 const Order = require('./models/order');
 const ForgotPassword = require('./models/forgotPassword');
 
+// Mount Routers
 app.use('/user', userRoutes);
 app.use('/expense', expenseRoutes);
 app.use('/checkout', checkoutRoutes);
@@ -48,6 +40,7 @@ app.use((req, res, next) => {
   res.sendFile(path.join(__dirname, `views/${req.url}`));
 });
 
+// Error handling
 app.use((req, res, next) => {
   const error = new Error('Not found');
   error.status = 404;
@@ -56,6 +49,9 @@ app.use((req, res, next) => {
 
 app.use((error, req, res, next) => {
   res.header(error.status || 500);
+  if (error.status === 404) {
+    return res.sendFile(path.join(__dirname, `views/404.html`));
+  }
   res.json({
     error: {
       message: error.message,
@@ -63,13 +59,11 @@ app.use((error, req, res, next) => {
   });
 });
 
-
+// Sequelize associations
 User.hasMany(Expense);
 Expense.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
-
 User.hasMany(Order);
 Order.belongsTo(User);
-
 User.hasMany(ForgotPassword);
 ForgotPassword.belongsTo(User);
 

@@ -23,15 +23,14 @@ exports.getOrderInfo = (req, res, next) => {
       // creating a order record with razorpay generated order_id
       await req.user.createOrder({ order_id: order.id });
       res.status(201).json({
-        success: true,
         message: 'Razorpay order generation successful.',
         key_id: process.env.RAZORPAY_KEY_ID,
         order: order,
       });
     });
   } catch (error) {
-    console.log(error.message);
-    res.status(500).json({ success: false, message: error.message });
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -55,7 +54,6 @@ exports.postTransactionStatus = async (req, res, next) => {
       .then(() => {
         console.log('Payment Successful');
         res.status(202).json({
-          success: true,
           message: 'User is now premium.',
           // create new updated token with updated field
           token: userController.generateAccessToken(
@@ -65,11 +63,11 @@ exports.postTransactionStatus = async (req, res, next) => {
           ),
         });
 
-        // In the frontend it will store in the localStorage
+        // In the frontend token will be store in the localStorage
       })
       .catch((err) => console.log(err));
   } catch (error) {
-    console.log(error.message);
-    res.status(500).json({ success: false, message: error.message });
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
 };

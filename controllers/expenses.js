@@ -17,13 +17,12 @@ exports.getExpenses = async (req, res, next) => {
       order: [['createdAt', 'DESC']],
     });
     res.status(200).json({
-      success: true,
       count: totalNumberOfExpenses,
       data: expense,
     });
   } catch (error) {
-    console.log(error.message);
-    res.status(500).json({ success: false, message: error.message });
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -55,14 +54,13 @@ exports.postAddExpense = async (req, res, next) => {
     await t.commit();
 
     res.status(201).json({
-      success: true,
       message: 'Expense added successfully.',
       data: expense,
     });
   } catch (error) {
     await t.rollback();
-    console.log(error.message);
-    res.status(500).json({ success: false, message: error.message });
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -74,7 +72,7 @@ exports.postDeleteExpense = async (req, res, next) => {
   try {
     const expense = await Expense.findByPk(id);
     const previousPrice = expense.price;
-    const result = await expense.destroy({ transaction: t });
+    await expense.destroy({ transaction: t });
 
     // updating total expense of user table
     const updatedTotalExpense = req.user.totalExpense - Number(previousPrice);
@@ -86,14 +84,13 @@ exports.postDeleteExpense = async (req, res, next) => {
     await t.commit();
 
     res.status(200).json({
-      success: true,
       message: 'Expense deleted successfully.',
       data: {},
     });
   } catch (error) {
     await t.rollback();
     console.log(error.message);
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -127,14 +124,13 @@ exports.postEditExpense = async (req, res, next) => {
     await t.commit();
 
     res.status(200).json({
-      success: true,
       message: 'Expense updated successfully.',
       data: updatedExpense,
     });
   } catch (error) {
     await t.rollback();
-    console.log(error.message);
-    res.status(500).json({ success: false, message: error.message });
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -143,7 +139,6 @@ exports.getLeaderboard = async (req, res, next) => {
   try {
     if (!req.user.isPremium) {
       return res.status(403).json({
-        success: false,
         message: 'The user does not have permission to perform this action.',
       });
     }
@@ -153,11 +148,10 @@ exports.getLeaderboard = async (req, res, next) => {
     });
 
     res.status(200).json({
-      success: true,
       data: leaderboard,
     });
   } catch (error) {
-    console.log(error.message);
-    res.status(500).json({ success: false, message: error.message });
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
 };

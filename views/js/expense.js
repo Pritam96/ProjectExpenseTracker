@@ -30,13 +30,13 @@ async function addToTheList(e) {
           headers: { Authorization: token },
         }
       );
-      // console.log(response);
       form.reset();
-      console.log('Record Added');
+      console.log(response);
+      alert(response.data.message);
       showAll();
     } catch (error) {
-      console.log(error.response.data.message);
-      alert('Something went wrong!');
+      console.log(error);
+      alert('Error: ', error.response.data.message);
       window.location.href = './signin.html';
     }
   } else {
@@ -54,9 +54,9 @@ async function addToTheList(e) {
           headers: { Authorization: token },
         }
       );
-      // console.log(response);
       form.reset();
-      console.log('Record Updated');
+      console.log(response);
+      alert(response.data.message);
 
       // Back to the Add Expense Button
       submit_button.className = 'btn btn-outline-primary mt-4';
@@ -64,8 +64,8 @@ async function addToTheList(e) {
 
       showAll();
     } catch (error) {
-      console.log(error.response.data.message);
-      alert('Something went wrong!');
+      console.log(error);
+      alert('Error: ', error.response.data.message);
       window.location.href = './signin.html';
     }
   }
@@ -105,11 +105,12 @@ function product(item) {
           `${BASE_URL}/expense/delete/${item.id}`,
           { headers: { Authorization: token } }
         );
-        console.log('Record Deleted');
+        console.log(response);
+        alert(response.data.message);
         showAll();
       } catch (error) {
-        console.log(error.response.data.message);
-        alert('Something went wrong!');
+        console.log(error);
+        alert('Error: ', error.response.data.message);
         window.location.href = './signin.html';
       }
     }
@@ -162,6 +163,8 @@ async function showAll(pageNumber) {
         headers: { Authorization: token },
       }
     );
+    console.log(response);
+
     if (response.data.data.length === 0) {
       console.log('NO DATA IS AVAILABLE');
       document.querySelector('#response').innerHTML =
@@ -174,8 +177,8 @@ async function showAll(pageNumber) {
       showPagination(currentPage, Number(response.data.count));
     }
   } catch (error) {
-    console.log(error.response.data.message);
-    alert('Something went wrong!');
+    console.log(error);
+    alert('Error: ', error.response.data.message);
     window.location.href = './signin.html';
   }
 }
@@ -232,8 +235,9 @@ function showPagination(currentPage, totalPages) {
   }
 }
 
-const rowButton = document.querySelector('#row-button');
-rowButton.addEventListener('click', () => {
+// Rows per page dropdown
+const dropDown = document.querySelector('#row-per-page');
+dropDown.addEventListener('change', () => {
   pageSize = Number(document.querySelector('#row-per-page').value);
   showAll();
 });

@@ -26,12 +26,10 @@ exports.getDailyReport = async (req, res, next) => {
       totalExpense += +expense.price;
     });
 
-    res
-      .status(200)
-      .json({ success: true, total: totalExpense, data: expenses });
+    res.status(200).json({ total: totalExpense, data: expenses });
   } catch (error) {
-    console.log(error.message);
-    res.status(500).json({ success: false, message: error.message });
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -58,12 +56,10 @@ exports.getMonthlyReport = async (req, res, next) => {
       totalExpense += +expense.price;
     });
 
-    res
-      .status(200)
-      .json({ success: true, total: totalExpense, data: expenses });
+    res.status(200).json({ total: totalExpense, data: expenses });
   } catch (error) {
-    console.log(error.message);
-    res.status(500).json({ success: false, message: error.message });
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -77,19 +73,48 @@ AWS.config.update({
 // Create a new instance of the S3 service
 const s3 = new AWS.S3();
 
-// GET => /reports/download => GET DOWNLOAD ALL EXPENSES
+// Download Reports PDF By Month/ By Date Range
 exports.getDownloadReport = async (req, res, next) => {
+  const yearMonth = req.params.yearMonth;
+  const startDate = req.query.startDate;
+  const endDate = req.query.endDate;
+
+  let expenses;
+  let table_heading;
+
+  if (yearMonth) {
+    const year = yearMonth.split('-')[0];
+    const month = yearMonth.split('-')[1];
+    expenses = await req.user.getExpenses({
+      where: [
+        sequelize.where(sequelize.fn('year', sequelize.col('createdAt')), year),
+        sequelize.where(
+          sequelize.fn('month', sequelize.col('createdAt')),
+          month
+        ),
+      ],
+      order: [['createdAt', 'ASC']],
+    });
+
+    table_heading = yearMonth;
+  } else {
+    expenses = await req.user.getExpenses({
+      where: {
+        createdAt: {
+          [Sequelize.Op.between]: [startDate, endDate],
+        },
+      },
+      order: [['createdAt', 'ASC']],
+    });
+    table_heading = `${startDate} to ${endDate}`;
+  }
+
   try {
     if (!req.user.isPremium) {
       return res.status(401).json({
-        success: false,
-        message: 'The user does not have permission to perform this action.',
+        message: 'User need to buy premium to access this feature.',
       });
     }
-
-    const expenses = await req.user.getExpenses({
-      order: [['createdAt', 'DESC']],
-    });
 
     let totalExpense = 0;
     expenses.forEach((expense) => {
@@ -127,7 +152,9 @@ exports.getDownloadReport = async (req, res, next) => {
     };
 
     // Add content to the PDF using the fetched data
-    doc.fontSize(14).text('Expense Report', { align: 'center' });
+    doc
+      .fontSize(14)
+      .text(`Expense Report: (${table_heading})`, { align: 'center' });
 
     doc.table(tableArray, { width: 530 }); // table width
 
@@ -168,7 +195,6 @@ exports.getDownloadReport = async (req, res, next) => {
         // Send the file link to the frontend as JSON
         const fileLink = `https://${params.Bucket}.s3.amazonaws.com/${params.Key}`;
         res.json({
-          success: true,
           message: 'PDF uploaded successfully.',
           fileLink,
         });
@@ -186,15 +212,13 @@ exports.getDownloadReport = async (req, res, next) => {
         });
 
         res.status(500).json({
-          success: false,
           message: 'Error generating PDF.',
         });
       }
     });
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
     res.status(500).json({
-      success: false,
       message: error.message,
     });
   }

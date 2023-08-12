@@ -42,8 +42,8 @@ async function showLeaderBoard() {
       });
     }
   } catch (error) {
-    console.log(error.response.data.message);
-    alert('Something went wrong!');
+    console.log(error);
+    alert('Error: ', error.response.data.message);
     window.location.href = './expense.html';
   }
 }

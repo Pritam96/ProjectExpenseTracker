@@ -29,43 +29,25 @@ viewReports_button.addEventListener('click', () => {
   window.location.href = './reports.html';
 });
 
-// Download Reports Button
-const downloadReports_button = document.querySelector('#download');
-downloadReports_button.addEventListener('click', downloadPdf);
-
-async function downloadPdf() {
-  if (!user.isPremium) {
-    return alert('User need to buy premium to access this feature');
-  }
-  try {
-    const response = await axios.get(`${BASE_URL}/reports/download`, {
-      headers: { Authorization: token },
-    });
-    window.open(response.data.fileLink, '_blank');
-    console.log('PDF downloaded successfully');
-  } catch (error) {
-    console.log(error.response.data.message);
-    alert('Something went wrong!');
-  }
-}
-
 // Leaderboard Button
 const leaderBoard_button = document.querySelector('#leaderboard');
 leaderBoard_button.addEventListener('click', loadLeaderboard);
 
 function loadLeaderboard() {
   if (!user.isPremium) {
-    return alert('User need to buy premium to access this feature');
+    return alert('User need to buy premium to access this feature.');
   } else {
     window.location.href = './leaderboard.html';
   }
 }
 
 // Buy Premium Button - Razorpay feature implementation
-// const buy_navItem = document.querySelector('#nav-item-buy-premium');
-// if (!user.isPremium) {
-//   buy_navItem.classList.add('disable');
-// }
+const buy_navItem = document.querySelector('#nav-item-buy-premium');
+if (user.isPremium) {
+  buy_navItem.classList.add('visually-hidden');
+} else {
+  buy_navItem.classList.remove('visually-hidden');
+}
 
 const buyPremium_button = document.querySelector('#buy-premium');
 buyPremium_button.addEventListener('click', buyPremium);
@@ -130,11 +112,11 @@ async function buyPremium() {
       // alert(response.error.metadata.order_id);
       // alert(response.error.metadata.payment_id);
       console.log(response);
-      alert('Something went wrong');
+      alert('Payment failed! Please try again after sometime.');
     });
   } catch (error) {
-    console.log(error.message);
-    alert('Error: ', error.message);
+    console.log(error);
+    alert('Error: ', error.response.data.message);
   }
 }
 

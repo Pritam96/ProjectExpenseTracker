@@ -16,7 +16,14 @@ router.get(
   reportController.getMonthlyReport
 );
 
-// GET => /download => GET DOWNLOAD ALL EXPENSES
+// GET => /download/<month> => GET DOWNLOAD ALL EXPENSES BY MONTH
+router.get(
+  '/download/:yearMonth',
+  authMiddleware,
+  reportController.getDownloadReport
+);
+
+// GET => /download/?startDate=<date>&endDate=<date> => GET DOWNLOAD ALL EXPENSES BY UNDER DATE RANGE
 router.get('/download', authMiddleware, reportController.getDownloadReport);
 
 module.exports = router;

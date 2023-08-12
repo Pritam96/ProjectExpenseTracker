@@ -10,7 +10,6 @@ exports.postCreateUser = async (req, res, next) => {
 
   if (!(name && email && password)) {
     return res.status(401).json({
-      success: false,
       message: 'All input field is required.',
     });
   }
@@ -19,7 +18,6 @@ exports.postCreateUser = async (req, res, next) => {
     const oldUser = await User.findOne({ where: { email } });
     if (oldUser) {
       return res.status(409).json({
-        success: false,
         message: 'User Already Exist. Please Login.',
       });
     }
@@ -36,14 +34,12 @@ exports.postCreateUser = async (req, res, next) => {
     console.log('user created');
 
     res.status(201).json({
-      success: true,
       message: 'User creation successful.',
       data: user,
     });
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
     res.status(500).json({
-      success: false,
       message: error.message,
     });
   }
@@ -56,7 +52,6 @@ exports.postLoginUser = async (req, res, next) => {
 
   if (!(email && password)) {
     return res.status(401).json({
-      success: false,
       message: 'All input field is required.',
     });
   }
@@ -70,26 +65,23 @@ exports.postLoginUser = async (req, res, next) => {
         console.log('user logged in');
 
         res.status(201).json({
-          success: true,
           message: 'Login successful.',
           token: generateAccessToken(user.id, user.email, user.isPremium),
         });
       } else {
         return res.status(401).json({
-          success: false,
           message: 'Invalid login credentials',
         });
       }
     } else {
       return res.status(401).json({
-        success: false,
-        message: 'Invalid login credentials',
+        message:
+          'No account found with the provided email address. Please signup first.',
       });
     }
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
     res.status(500).json({
-      success: false,
       message: error.message,
     });
   }

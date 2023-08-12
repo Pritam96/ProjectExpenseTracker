@@ -11,7 +11,6 @@ exports.postForgotPassword = async (req, res, next) => {
     const user = await User.findOne({ where: { email: req.body.email } });
     if (!user) {
       return res.status(404).json({
-        success: true,
         message: 'User with this email id not exists.',
       });
     }
@@ -47,13 +46,12 @@ exports.postForgotPassword = async (req, res, next) => {
     });
 
     res.status(200).json({
-      success: true,
-      data: response.messageId,
-      message: 'Password reset email sended successfully.',
+      message:
+        'Password reset link has been sent to your email. Please check you email.',
     });
   } catch (error) {
-    console.log(error.message);
-    res.status(500).json({ success: false, message: error.message });
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -171,17 +169,14 @@ exports.postUpdatePassword = async (req, res, next) => {
       const updatedUser = await user.update({ password: encryptedPassword });
       await forgotPassword.update({ active: false });
       res.status(201).json({
-        success: true,
         message: 'Password update successful.',
         data: updatedUser,
       });
     } else {
-      return res
-        .status(404)
-        .json({ success: false, message: 'User not found.' });
+      return res.status(404).json({ message: 'User not found.' });
     }
   } catch (error) {
-    console.log(error.message);
-    return res.status(403).json({ success: false, message: error.message });
+    console.log(error);
+    return res.status(403).json({ message: error.message });
   }
 };

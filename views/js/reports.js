@@ -2,6 +2,10 @@ const date_form = document.querySelector('#sortByDay');
 
 const month_form = document.querySelector('#sortByMonth');
 
+const download_monthly_button = document.querySelector('#download_monthly');
+
+const download_range_button = document.querySelector('#download_range');
+
 const dayTableSection = document.querySelector('#dayWiseTable');
 
 const monthTableSection = document.querySelector('#monthWiseTable');
@@ -12,6 +16,7 @@ month_form.addEventListener('submit', getMonthlyReport);
 
 async function getDailyReport(e) {
   e.preventDefault();
+  download_monthly_button.classList.add('visually-hidden');
   const startDate = document.querySelector('#selectedStartDate').value;
   const endDate = document.querySelector('#selectedEndDate').value;
   try {
@@ -23,6 +28,7 @@ async function getDailyReport(e) {
     );
 
     if (response.data.data.length > 0) {
+      download_range_button.classList.remove('visually-hidden');
       dayTableSection.textContent = '';
       response.data.data.forEach((expense) => {
         showTable(expense, dayTableSection);
@@ -40,6 +46,7 @@ async function getDailyReport(e) {
       tr.append(td1, td2, td3, td4);
       dayTableSection.appendChild(tr);
     } else {
+      download_range_button.classList.add('visually-hidden');
       dayTableSection.textContent = '';
       const tr = document.createElement('tr');
       const td = document.createElement('td');
@@ -59,6 +66,7 @@ async function getDailyReport(e) {
 
 async function getMonthlyReport(e) {
   e.preventDefault();
+  download_range_button.classList.add('visually-hidden');
   const yearMonth = document.querySelector('#selectedMonth').value;
   try {
     const response = await axios.get(
@@ -69,6 +77,7 @@ async function getMonthlyReport(e) {
     );
 
     if (response.data.data.length > 0) {
+      download_monthly_button.classList.remove('visually-hidden');
       monthTableSection.textContent = '';
       response.data.data.forEach((expense) => {
         showTable(expense, monthTableSection);
@@ -86,6 +95,7 @@ async function getMonthlyReport(e) {
       tr.append(td1, td2, td3, td4);
       monthTableSection.appendChild(tr);
     } else {
+      download_monthly_button.classList.add('visually-hidden');
       monthTableSection.textContent = '';
       const tr = document.createElement('tr');
       const td = document.createElement('td');
@@ -120,4 +130,45 @@ function showTable(expense, appendToElement) {
   td_expense.textContent = `\u20B9${expense.price}`;
   tr.append(td_date, td_description, td_category, td_expense);
   appendToElement.appendChild(tr);
+}
+
+// Download By Month
+download_monthly_button.addEventListener('click', download_monthly_pdf);
+
+async function download_monthly_pdf() {
+  const yearMonth = document.querySelector('#selectedMonth').value;
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/reports/download/${yearMonth}`,
+      {
+        headers: { Authorization: token },
+      }
+    );
+    window.open(response.data.fileLink, '_blank');
+    console.log('PDF downloaded successfully');
+  } catch (error) {
+    console.log(error);
+    alert(error.response.data.message);
+  }
+}
+
+// Download By Range
+download_range_button.addEventListener('click', download_pdf_range);
+
+async function download_pdf_range() {
+  const startDate = document.querySelector('#selectedStartDate').value;
+  const endDate = document.querySelector('#selectedEndDate').value;
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/reports/download/?startDate=${startDate}&endDate=${endDate}`,
+      {
+        headers: { Authorization: token },
+      }
+    );
+    window.open(response.data.fileLink, '_blank');
+    console.log('PDF downloaded successfully');
+  } catch (error) {
+    console.log(error);
+    alert(error.response.data.message);
+  }
 }
