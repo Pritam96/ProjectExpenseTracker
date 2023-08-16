@@ -93,7 +93,7 @@ exports.getResetPassword = async (req, res, next) => {
         <title>Reset Password</title>
       </head>
       <body>
-        <div class="container d-flex justify-content-center align-items-center vh-100">
+        <div class="container d-flex justify-content-center align-items-center mt-5">
           <div class="col-10 col-sm-8 col-lg-5 col-xl-5">
             <div class="card">
               <div class="card-body">
@@ -141,6 +141,7 @@ exports.getResetPassword = async (req, res, next) => {
                 await axios.post('http://localhost:4000/password/update',{resetPasswordId, password });
                 alert('Password Updated Successfully');
                 form.reset();
+                window.location.href = 'http://localhost:4000/signin.html';
               } catch(error) {
                 console.log(error);
               }

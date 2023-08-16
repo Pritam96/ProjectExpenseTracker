@@ -1,7 +1,5 @@
 const form = document.querySelector('#signup-form');
 
-const alert_content = document.querySelector('#alert');
-
 form.addEventListener('submit', createUser);
 
 async function createUser(e) {
@@ -17,21 +15,34 @@ async function createUser(e) {
       password,
     });
     form.reset();
-    // alert(result.data.message);
-    fadeAlert('alert alert-success', result.data.message, 3000);
-    window.location.href = './signin.html';
+    if (response.data) {
+      getSuccessAlert(response.data.message);
+    }
+    window.location.href = './expense.html';
   } catch (error) {
-    console.log(error.message);
-    fadeAlert('alert alert-danger', error.response.data.message, 4000);
+    console.log(error);
+    if (error.response.data) getErrorAlert(error.response.data.message);
   }
 }
 
-function fadeAlert(alertType, alertBody, timeout) {
-  alert_content.className = alertType;
-  alert_content.textContent = alertBody;
+// Success Alert Function
 
+function getSuccessAlert(message) {
+  errorAlert.textContent = message;
+  errorAlert.classList.remove('alert-danger');
+  errorAlert.classList.add('alert-success');
+  errorAlert.classList.remove('d-none');
+  errorAlert.classList.add('d-block');
   setTimeout(function () {
-    alert_content.className = 'alert';
-    alert_content.textContent = '';
-  }, timeout);
+    document.getElementById('errorAlert').classList.add('d-none');
+  }, 3000);
+}
+
+function getErrorAlert(message) {
+  errorAlert.textContent = message;
+  errorAlert.classList.remove('d-none');
+  errorAlert.classList.add('d-block');
+  setTimeout(function () {
+    document.getElementById('errorAlert').classList.add('d-none');
+  }, 5000);
 }

@@ -15,11 +15,28 @@
       crossorigin="anonymous"
     />
 
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* background-color: #f0f0f0; */
+      }
+
+      .card {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+
     <title>Expense Tracker Login</title>
   </head>
   <body>
     <div
-      class="container d-flex justify-content-center align-items-center vh-100"
+      class="container d-flex justify-content-center align-items-center mt-5"
     >
       <div class="col-10 col-sm-8 col-lg-5 col-xl-5">
         <div class="card">
@@ -66,10 +83,19 @@
               </div>
             </form>
 
-            <div style="height: 60px">
+            <!-- <div style="height: 60px">
               <div class="alert" role="alert" id="alert"></div>
-            </div>
+            </div> -->
           </div>
+        </div>
+
+        <!-- Alert for Error Response -->
+        <div
+          id="errorAlert"
+          class="alert alert-danger mt-5 d-none"
+          role="alert"
+        >
+          An error occurred. Please try again later.
         </div>
       </div>
     </div>

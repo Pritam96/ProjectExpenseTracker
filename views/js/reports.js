@@ -10,6 +10,10 @@ const dayTableSection = document.querySelector('#dayWiseTable');
 
 const monthTableSection = document.querySelector('#monthWiseTable');
 
+const errorAlertRange = document.querySelector('#errorAlertRange');
+
+const errorAlertMonth = document.querySelector('#errorAlertMonth');
+
 date_form.addEventListener('submit', getDailyReport);
 
 month_form.addEventListener('submit', getMonthlyReport);
@@ -19,6 +23,10 @@ async function getDailyReport(e) {
   download_monthly_button.classList.add('visually-hidden');
   const startDate = document.querySelector('#selectedStartDate').value;
   const endDate = document.querySelector('#selectedEndDate').value;
+  if (startDate > endDate) {
+    getErrorAlert(errorAlertRange, 'Invalid date! Please check the date.');
+    return date_form.reset();
+  }
   try {
     const response = await axios.get(
       `${BASE_URL}/reports/dailyReport/?startDate=${startDate}&endDate=${endDate}`,
@@ -59,8 +67,10 @@ async function getDailyReport(e) {
       dayTableSection.appendChild(tr);
     }
   } catch (error) {
-    console.log(error.response.data.message);
-    alert('Something went wrong!');
+    console.log(error);
+    if (error.response.data) {
+      getErrorAlert(errorAlertRange, error.response.data.message);
+    }
   }
 }
 
@@ -108,8 +118,10 @@ async function getMonthlyReport(e) {
       monthTableSection.appendChild(tr);
     }
   } catch (error) {
-    console.log(error.response.data.message);
-    alert('Something went wrong!');
+    console.log(error);
+    if (error.response.data) {
+      getErrorAlert(errorAlertMonth, error.response.data.message);
+    }
   }
 }
 
@@ -148,7 +160,9 @@ async function download_monthly_pdf() {
     console.log('PDF downloaded successfully');
   } catch (error) {
     console.log(error);
-    alert(error.response.data.message);
+    if (error.response.data) {
+      getErrorAlert(errorAlertRange, error.response.data.message);
+    }
   }
 }
 
@@ -169,6 +183,28 @@ async function download_pdf_range() {
     console.log('PDF downloaded successfully');
   } catch (error) {
     console.log(error);
-    alert(error.response.data.message);
+    if (error.response.data) {
+      alert(error.response.data.message);
+    }
   }
+}
+
+function getSuccessAlert(errorElement, message) {
+  errorElement.textContent = message;
+  errorElement.classList.remove('alert-danger');
+  errorElement.classList.add('alert-success');
+  errorElement.classList.remove('d-none');
+  errorElement.classList.add('d-block');
+  setTimeout(function () {
+    errorElement.classList.add('d-none');
+  }, 3000);
+}
+
+function getErrorAlert(errorElement, message) {
+  errorElement.textContent = message;
+  errorElement.classList.remove('d-none');
+  errorElement.classList.add('d-block');
+  setTimeout(function () {
+    errorElement.classList.add('d-none');
+  }, 5000);
 }

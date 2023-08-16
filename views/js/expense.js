@@ -1,9 +1,11 @@
-const hidden_input = document.querySelector('#expenseID');
-hidden_input.style.display = 'none';
+// const hidden_input = document.querySelector('#expenseID');
+// hidden_input.style.display = 'none';
 
 const form = document.querySelector('#expense-form');
 
 const submit_button = document.querySelector('#submit-button');
+
+const errorAlert = document.querySelector('#errorAlert');
 
 let pageSize = 5;
 
@@ -31,13 +33,19 @@ async function addToTheList(e) {
         }
       );
       form.reset();
-      console.log(response);
-      alert(response.data.message);
+      // console.log(response);
+      // alert(response.data.message);
+      if (response.data.message) {
+        getSuccessAlert(response.data.message);
+      }
       showAll();
     } catch (error) {
       console.log(error);
-      alert('Error: ', error.response.data.message);
-      window.location.href = './signin.html';
+      if (error.response.data) {
+        getErrorAlert(error.response.data.message);
+      }
+      // alert('Error: ', error.response.data.message);
+      // window.location.href = './signin.html';
     }
   } else {
     //* postEditExpense - Update an expense
@@ -55,8 +63,11 @@ async function addToTheList(e) {
         }
       );
       form.reset();
-      console.log(response);
-      alert(response.data.message);
+      // console.log(response);
+      // alert(response.data.message);
+      if (response.data.message) {
+        getSuccessAlert(response.data.message);
+      }
 
       // Back to the Add Expense Button
       submit_button.className = 'btn btn-outline-primary mt-4';
@@ -65,8 +76,11 @@ async function addToTheList(e) {
       showAll();
     } catch (error) {
       console.log(error);
-      alert('Error: ', error.response.data.message);
-      window.location.href = './signin.html';
+      if (error.response.data) {
+        getErrorAlert(error.response.data.message);
+      }
+      // alert('Error: ', error.response.data.message);
+      // window.location.href = './signin.html';
     }
   }
 }
@@ -105,13 +119,19 @@ function product(item) {
           `${BASE_URL}/expense/delete/${item.id}`,
           { headers: { Authorization: token } }
         );
-        console.log(response);
-        alert(response.data.message);
+        // console.log(response);
+        // alert(response.data.message);
+        if (response.data.message) {
+          getSuccessAlert(response.data.message);
+        }
         showAll();
       } catch (error) {
         console.log(error);
-        alert('Error: ', error.response.data.message);
-        window.location.href = './signin.html';
+        // alert('Error: ', error.response.data.message);
+        if (error.response.data) {
+          getErrorAlert(error.response.data.message);
+        }
+        // window.location.href = './signin.html';
       }
     }
   };
@@ -163,7 +183,7 @@ async function showAll(pageNumber) {
         headers: { Authorization: token },
       }
     );
-    console.log(response);
+    // console.log(response);
 
     if (response.data.data.length === 0) {
       console.log('NO DATA IS AVAILABLE');
@@ -178,8 +198,11 @@ async function showAll(pageNumber) {
     }
   } catch (error) {
     console.log(error);
-    alert('Error: ', error.response.data.message);
-    window.location.href = './signin.html';
+    // alert('Error: ', error.response.data.message);
+    if (error.response.data) {
+      getErrorAlert(error.response.data.message);
+    }
+    // window.location.href = './signin.html';
   }
 }
 
@@ -241,3 +264,25 @@ dropDown.addEventListener('change', () => {
   pageSize = Number(document.querySelector('#row-per-page').value);
   showAll();
 });
+
+// Success Alert Function
+
+function getSuccessAlert(message) {
+  errorAlert.textContent = message;
+  errorAlert.classList.remove('alert-danger');
+  errorAlert.classList.add('alert-success');
+  errorAlert.classList.remove('d-none');
+  errorAlert.classList.add('d-block');
+  setTimeout(function () {
+    document.getElementById('errorAlert').classList.add('d-none');
+  }, 3000);
+}
+
+function getErrorAlert(message) {
+  errorAlert.textContent = message;
+  errorAlert.classList.remove('d-none');
+  errorAlert.classList.add('d-block');
+  setTimeout(function () {
+    document.getElementById('errorAlert').classList.add('d-none');
+  }, 5000);
+}
